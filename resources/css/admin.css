@@ -1,0 +1,80 @@
+@import 'tailwindcss';
+
+@source '../views/admin/**/*.blade.php';
+@source '../views/layouts/admin.blade.php';
+@source '../views/components/**/*.blade.php';
+@source '../js/admin.js';
+
+/*
+ * Dashboard design tokens. Calm working surface; brand pink is reserved for primary actions
+ * and the active nav item so it stays meaningful.
+ */
+@theme {
+    --font-sans: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Fredoka', 'Nunito', ui-sans-serif, sans-serif;
+
+    --color-brand: #E8177F;
+    --color-brand-dark: #C10F68;
+    --color-brand-soft: #FDE7F2;
+    --color-teal: #2CBCC9;
+    --color-grape: #8479BD;
+    --color-lime: #7FA82A;
+    --color-honey: #E8A317;
+    --color-ink: #26244F;
+    --color-muted: #6B6890;
+    --color-line: #E7E5F2;
+    --color-canvas: #F6F5FB;
+}
+
+@layer base {
+    html { -webkit-font-smoothing: antialiased; }
+    body { @apply bg-canvas text-ink font-sans text-[14px]; }
+    h1, h2, h3 { @apply font-display text-ink; }
+    [x-cloak] { display: none !important; }
+    :focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+}
+
+@layer components {
+    .card { @apply bg-white rounded-2xl border border-line; }
+    .card-pad { @apply p-5; }
+    .card-title { @apply font-display text-[17px] font-medium text-ink; }
+
+    .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 h-10 text-sm font-bold transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed; }
+    .btn-sm { @apply h-8 px-3 text-[13px] rounded-lg; }
+    .btn-primary { @apply bg-brand text-white hover:bg-brand-dark; }
+    .btn-secondary { @apply bg-white text-ink border border-line hover:border-grape/50 hover:bg-canvas; }
+    .btn-ghost { @apply text-muted hover:text-ink hover:bg-canvas; }
+    .btn-danger { @apply bg-white text-red-600 border border-red-200 hover:bg-red-50; }
+    .btn-success { @apply bg-lime text-white hover:brightness-95; }
+
+    .label { @apply block text-[13px] font-bold text-ink mb-1.5; }
+    .hint { @apply text-xs text-muted mt-1; }
+    .input { @apply block w-full rounded-xl border border-line bg-white px-3 h-10 text-sm text-ink placeholder:text-muted/60 focus:border-brand focus:ring-2 focus:ring-brand/15 focus:outline-none; }
+    textarea.input { @apply h-auto py-2.5 leading-relaxed; }
+    select.input { @apply pr-8; }
+    .input-error { @apply border-red-400; }
+    .error { @apply text-xs text-red-600 mt-1 font-semibold; }
+    .checkbox { @apply size-4 rounded border-line text-brand focus:ring-brand/30 accent-[#E8177F]; }
+
+    .table { @apply w-full text-sm; }
+    .table thead th { @apply text-left text-xs font-bold text-muted px-4 py-3 border-b border-line bg-canvas/60 whitespace-nowrap; }
+    .table tbody td { @apply px-4 py-3 border-b border-line/70 align-middle; }
+    .table tbody tr:last-child td { @apply border-b-0; }
+    .table tbody tr:hover td { @apply bg-canvas/50; }
+
+    .badge { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold whitespace-nowrap; }
+    .badge-muted { @apply bg-canvas text-muted; }
+    .badge-green { @apply bg-lime/15 text-[#557316]; }
+    .badge-red { @apply bg-red-50 text-red-600; }
+    .badge-pink { @apply bg-brand-soft text-brand-dark; }
+
+    .page-title { @apply font-display text-2xl font-medium text-ink; }
+    .page-subtitle { @apply text-muted text-sm mt-0.5; }
+
+    .nav-link { @apply flex items-center gap-3 rounded-xl px-3 h-10 text-[14px] font-semibold text-white/75 hover:text-white hover:bg-white/10; }
+    .nav-link.active { @apply bg-white text-ink; }
+    .nav-group { @apply px-3 pt-5 pb-1.5 text-[11px] font-bold text-white/45; }
+
+    .stat-value { @apply font-display text-[28px] leading-none text-ink; }
+    .stat-label { @apply text-[13px] text-muted font-semibold; }
+}
