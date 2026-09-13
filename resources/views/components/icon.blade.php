@@ -79,4 +79,4 @@
         'monitor' => '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',
     ];
 @endphp
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ $stroke }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" {{ $attributes->merge(['class' => 'size-5 shrink-0']) }}>{!! $icons[$name] ?? $icons['star'] !!}</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ $stroke }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" {{ $attributes->class(['shrink-0', 'size-5' => ! preg_match('/(^|\s)(size-|w-|h-)/', (string) $attributes->get('class'))]) }}>{!! $icons[$name] ?? $icons['star'] !!}</svg>

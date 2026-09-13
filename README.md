@@ -1,59 +1,115 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Marshmallow Child Development Center
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Website, content dashboard, sales CRM and visitor analytics for Marshmallow nursery (Hadayek Al Ahram & Sheikh Zayed).
 
-## About Laravel
+- **Stack:** Laravel 12 · Blade · Tailwind CSS 4 · Alpine.js · MySQL/MariaDB
+- **Website:** `/`
+- **Dashboard:** `/admin`
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Dashboard accounts (seeded)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Role | Email | What they can do |
+|---|---|---|
+| Admin | admin@marshmallownursery.com | Everything: website content, settings, team, CRM, analytics |
+| Sales manager | manager@marshmallownursery.com | All leads, assigning, reports, analytics |
+| Sales (Hadayek) | sales.hadayek@marshmallownursery.com | Only the leads assigned to them |
+| Sales (Zayed) | sales.zayed@marshmallownursery.com | Only the leads assigned to them |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Seeded password: `Marshmallow@2026`. **Change every password from Dashboard → Team & access before going live.**
 
-## Learning Laravel
+## Local setup (XAMPP)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```bash
+composer install
+cp .env.example .env   # then set APP_ENV=local, APP_DEBUG=true, APP_URL, DB_*
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
+npm install && npm run build
+php artisan serve
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## How classes are assigned
 
-## Laravel Sponsors
+| Class | Age |
+|---|---|
+| Cupcake | 9 months – 2 years |
+| Popcorn | 2 – 2.5 years |
+| Candy | 2.5 – 3 years |
+| Ice Cream | 3 – 3.5 years |
+| Lollipop | 3.5 – 4 years |
+| Cotton Candy | 4 years – school age |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- The child's age is measured on **1 October** of the school year the parent picks (if that date has passed, today's age is used).
+- A child exactly on a boundary moves **up** to the older class.
+- Under 9 months: the lead is saved as **waitlist**.
+- Ranges, names, colors, activities and photos are all editable in Dashboard → Classes. Active classes cannot overlap.
 
-### Premium Partners
+Logic lives in `app/Support/ClassFinder.php` (server) and is mirrored in the class finder on the website.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Photos
 
-## Contributing
+Upload from the dashboard — no code changes needed:
+- **Classes → edit class:** class photos, and photos for each activity *inside that class* (e.g. Cupcake's gymnastics).
+- **Activities → edit:** general photos for an activity.
+- **Camps**, **Gallery albums**, **Homepage sections**, **Settings → About** also take images.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Large photos are resized automatically to 1920px.
 
-## Code of Conduct
+## Visitor analytics
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The website tracks visits first-party (no third-party service needed): source (Facebook, Google, WhatsApp, ads, UTM campaigns), pages, engaged time, scroll depth, calls/WhatsApp/map taps, class finder results and enrollment form starts/submits. When a parent submits a form, their whole journey appears on the lead in the CRM.
 
-## Security Vulnerabilities
+- Code: `resources/js/tracker.js` → `POST /t/collect` → `app/Http/Controllers/TrackingController.php`
+- Logged-in dashboard users and bots are not tracked.
+- Optional GA4 and Meta Pixel IDs can be added in Dashboard → Settings → Tracking.
+- Tip: use UTM links in Facebook posts/ads, e.g. `https://yoursite.com/?utm_source=facebook&utm_medium=post&utm_campaign=admissions_2026`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Deploying to Cloudways
 
-## License
+1. **Create the app:** a PHP (Laravel) application on PHP 8.2+ with MySQL.
+2. **Point the webroot** to `public_html/public` (Application Settings → Webroot).
+3. **Deploy code** via Deployment via Git (connect the GitHub repo and pull the branch).
+   `public/build` is committed, so Node is not needed on the server. Run `npm run build` locally and commit before pushing whenever you change styles or scripts.
+4. **Environment:** over SSH in the app folder:
+   ```bash
+   cp .env.example .env         # fill in APP_URL, DB_* from Cloudways Access Details, MAIL_* for email alerts
+   composer install --no-dev --optimize-autoloader
+   php artisan key:generate
+   php artisan migrate --force --seed
+   php artisan storage:link
+   php artisan config:cache && php artisan route:cache && php artisan view:cache
+   ```
+5. **Cron job** (Cloudways → Cron Job Management), for follow-up reminders:
+   ```
+   * * * * * cd /home/master/applications/APP_ID/public_html && php artisan schedule:run >> /dev/null 2>&1
+   ```
+6. **SSL:** enable Let's Encrypt on the domain.
+7. **After each later deploy:**
+   ```bash
+   composer install --no-dev --optimize-autoloader
+   php artisan migrate --force
+   php artisan optimize:clear && php artisan config:cache && php artisan route:cache && php artisan view:cache
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Do **not** run `db:seed` again after launch except for a specific seeder you mean to re-run. Never run the demo data seeder in production.
+
+## Scheduled tasks (need the cron above)
+
+| Command | When | What |
+|---|---|---|
+| `crm:follow-up-reminders` | every 15 min | Notifies an agent when a follow-up is due within the hour |
+| `crm:follow-up-digest` | 08:00 daily | Morning notice to agents who have overdue follow-ups |
+| `analytics:prune` | weekly | Deletes tracking data older than 400 days (keeps visits that became leads) |
+
+## Demo data (local preview only)
+
+```bash
+php artisan db:seed --class=DemoDataSeeder   # 60 days of visits + ~166 leads with follow-ups
+```
+
+Remove it before launch (or simply start the live database fresh with `migrate --seed`):
+
+```bash
+php artisan tinker --execute="App\Models\Lead::withTrashed()->where('utm_content','demo')->forceDelete(); DB::table('visits')->where('ip_hash','demo')->delete(); App\Models\Visitor::whereNull('lead_id')->doesntHave('visits')->delete();"
+```

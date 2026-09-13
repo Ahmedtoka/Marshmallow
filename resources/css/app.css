@@ -5,7 +5,319 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/*
+ * Marshmallow public website.
+ * Palette pulled from the logo; Ink is used for all text (never black).
+ */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Nunito', ui-rounded, ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Fredoka', 'Nunito', ui-rounded, ui-sans-serif, system-ui, sans-serif;
+
+    --color-pink: #e8177f;
+    --color-pink-600: #c70f6b;
+    --color-pink-100: #fde3f0;
+    --color-pink-200: #f9c4de;
+    --color-blush: #fff5fa;
+
+    --color-teal: #2cbcc9;
+    --color-teal-700: #13808b;
+    --color-teal-50: #e9f8fa;
+
+    --color-sun: #f6e82b;
+    --color-sun-100: #fdf9cf;
+
+    --color-lime: #a8c83b;
+    --color-lime-700: #6f9420;
+    --color-lime-50: #f3f8e2;
+
+    --color-grape: #8479bd;
+    --color-grape-50: #f1eff8;
+
+    --color-ink: #33307a;
+    --color-ink-soft: #57548f;
+    --color-ink-muted: #75739f;
+
+    --color-line: #f1dce8;
+    --color-line-soft: #f7ebf2;
+}
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+        scroll-padding-top: 6rem;
+    }
+
+    body {
+        font-family: var(--font-sans);
+        color: var(--color-ink);
+        background: #fff;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    .font-display {
+        font-family: var(--font-display);
+        letter-spacing: -0.005em;
+    }
+
+    ::selection {
+        background: var(--color-pink-100);
+        color: var(--color-ink);
+    }
+
+    :focus-visible {
+        outline: 3px solid var(--color-teal);
+        outline-offset: 3px;
+        border-radius: 0.5rem;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
+
+@layer components {
+    /* ---------- Buttons ---------- */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-height: 3rem;
+        padding: 0.65rem 1.4rem;
+        border-radius: 999px;
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 1.05rem;
+        line-height: 1.2;
+        text-align: center;
+        transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+        cursor: pointer;
+    }
+    .btn:active {
+        transform: translateY(1px);
+    }
+    .btn-primary {
+        background: var(--color-pink);
+        color: #fff;
+    }
+    .btn-primary:hover {
+        background: var(--color-pink-600);
+    }
+    .btn-outline {
+        border: 2px solid var(--color-pink);
+        color: var(--color-pink-600);
+        background: #fff;
+    }
+    .btn-outline:hover {
+        background: var(--color-blush);
+    }
+    .btn-soft {
+        background: var(--color-blush);
+        color: var(--color-ink);
+        border: 2px solid var(--color-line);
+    }
+    .btn-soft:hover {
+        border-color: var(--color-pink-200);
+    }
+    .btn-white {
+        background: #fff;
+        color: var(--color-pink-600);
+    }
+    .btn-white:hover {
+        background: var(--color-sun-100);
+    }
+    .btn-sm {
+        min-height: 2.5rem;
+        padding: 0.45rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .link {
+        color: var(--color-pink-600);
+        font-weight: 700;
+        text-decoration: underline;
+        text-decoration-color: var(--color-pink-200);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+    .link:hover {
+        text-decoration-color: var(--color-pink);
+    }
+
+    /* ---------- Signature: the logo's speech bubble ---------- */
+    .mm-bubble {
+        position: relative;
+        background: #fff;
+        border: 3px solid var(--color-pink);
+        border-radius: 2.25rem;
+    }
+    .mm-bubble-tail {
+        position: absolute;
+        bottom: -29px;
+        width: 52px;
+        height: 32px;
+        pointer-events: none;
+    }
+
+    /* ---------- Photo placeholder (echoes the logo's dots) ---------- */
+    .mm-ph {
+        background-color: color-mix(in srgb, var(--ph, #e8177f) 11%, #fff);
+        background-image: radial-gradient(color-mix(in srgb, var(--ph, #e8177f) 26%, transparent) 1.6px, transparent 1.8px);
+        background-size: 18px 18px;
+        background-position: 9px 9px;
+    }
+    .mm-ph::before,
+    .mm-ph::after {
+        content: '';
+        position: absolute;
+        border-radius: 999px;
+        pointer-events: none;
+    }
+    .mm-ph::before {
+        width: 38%;
+        aspect-ratio: 1;
+        right: -8%;
+        top: -12%;
+        background: color-mix(in srgb, var(--ph, #e8177f) 16%, #fff);
+    }
+    .mm-ph::after {
+        width: 14%;
+        aspect-ratio: 1;
+        left: 9%;
+        bottom: 12%;
+        background: color-mix(in srgb, var(--ph, #e8177f) 22%, #fff);
+    }
+
+    /* ---------- Forms ---------- */
+    .field-label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 0.35rem;
+    }
+    .field-input {
+        display: block;
+        width: 100%;
+        min-height: 3rem;
+        padding: 0.6rem 0.95rem;
+        border: 2px solid var(--color-line);
+        border-radius: 0.9rem;
+        background: #fff;
+        color: var(--color-ink);
+        font-size: 1rem;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .field-input::placeholder {
+        color: var(--color-ink-muted);
+        opacity: 0.8;
+    }
+    .field-input:hover {
+        border-color: var(--color-pink-200);
+    }
+    .field-input:focus {
+        outline: none;
+        border-color: var(--color-teal);
+        box-shadow: 0 0 0 4px var(--color-teal-50);
+    }
+    .field-input[aria-invalid='true'] {
+        border-color: var(--color-pink);
+        background: var(--color-blush);
+    }
+    select.field-input {
+        appearance: none;
+        padding-right: 2.5rem;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2333307A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.85rem center;
+        background-size: 1.1rem;
+    }
+    textarea.field-input {
+        min-height: 7rem;
+    }
+    .field-error {
+        margin-top: 0.35rem;
+        color: var(--color-pink-600);
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+    .field-hint {
+        margin-top: 0.3rem;
+        color: var(--color-ink-muted);
+        font-size: 0.875rem;
+    }
+
+    /* ---------- Misc ---------- */
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        line-height: 1.2;
+        border: 2px solid var(--chip, var(--color-line));
+        background: color-mix(in srgb, var(--chip, #fff) 8%, #fff);
+    }
+
+    .prose-mm {
+        max-width: 68ch;
+        line-height: 1.7;
+    }
+    .prose-mm p + p {
+        margin-top: 1em;
+    }
+
+    .scrollbar-none {
+        scrollbar-width: none;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* One gentle hero entrance */
+@keyframes mm-rise {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+@keyframes mm-bob {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+.mm-rise {
+    animation: mm-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.mm-rise-delay {
+    animation-delay: 0.15s;
+}
+.mm-bob {
+    animation: mm-bob 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

@@ -19,6 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // The tracker posts with navigator.sendBeacon, which cannot attach a CSRF header.
         $middleware->validateCsrfTokens(except: ['t/collect']);
 
+        // Tracker cookies are written by JavaScript in plain text; without this Laravel reads them as null
+        // and website leads lose their link to the visitor journey.
+        $middleware->encryptCookies(except: ['mm_vid', 'mm_sid']);
+
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
         $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
 
