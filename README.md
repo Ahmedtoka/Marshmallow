@@ -85,12 +85,20 @@ The website tracks visits first-party (no third-party service needed): source (F
    * * * * * cd /home/master/applications/APP_ID/public_html && php artisan schedule:run >> /dev/null 2>&1
    ```
 6. **SSL:** enable Let's Encrypt on the domain.
-7. **After each later deploy:**
+7. **After each later deploy** (pull from Git, then over SSH in the app folder):
    ```bash
-   composer install --no-dev --optimize-autoloader
-   php artisan migrate --force
-   php artisan optimize:clear && php artisan config:cache && php artisan route:cache && php artisan view:cache
+   bash deploy.sh
    ```
+   It puts the site in maintenance mode, installs dependencies, migrates, rebuilds caches and brings the site back up.
+
+Repository: `git@github.com:Ahmedtoka/Marshmallow.git` (branch `main`).
+
+### Tests
+
+```bash
+php artisan test
+```
+Covers every public page, the enrollment form (phone normalizing, class boundary rule, auto-assignment) and dashboard login protection. Runs on an in-memory SQLite database, so it never touches real data.
 
 Do **not** run `db:seed` again after launch except for a specific seeder you mean to re-run. Never run the demo data seeder in production.
 
