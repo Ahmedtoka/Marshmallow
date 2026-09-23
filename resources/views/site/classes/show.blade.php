@@ -30,11 +30,6 @@
                     @endif
                     <div class="mt-6 flex flex-wrap items-center gap-3">
                         <a href="{{ route('enroll', ['class' => $classroom->slug]) }}" class="btn btn-primary" data-track="cta_click" data-track-label="{{ $classroom->name }} header – Book a visit">Book a visit</a>
-                        @if ($classroom->teacher_ratio)
-                            <span class="inline-flex items-center gap-2 rounded-full border-2 bg-white px-3.5 py-2 text-sm font-bold" style="border-color: color-mix(in srgb, {{ $c }} 35%, #fff);">
-                                <x-icon name="teacher" class="size-4" style="color: {{ $c }}" /> {{ $classroom->teacher_ratio }}
-                            </span>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -67,29 +62,6 @@
             @endif
         </div>
     </section>
-
-    {{-- Daily routine timeline --}}
-    @if (! empty($classroom->daily_routine))
-        <section class="bg-blush py-14 sm:py-20" data-track-section="class_routine">
-            <div class="mx-auto max-w-6xl px-5 sm:px-8">
-                <x-site.section-head title="Daily routine" subtitle="Every day has a gentle rhythm, so children always know what comes next." />
-                <ol class="mt-8 gap-x-10 md:columns-2">
-                    @foreach ($classroom->daily_routine as $i => $step)
-                        <li class="relative flex break-inside-avoid gap-4 pb-5">
-                            @if (! $loop->last)
-                                <span aria-hidden="true" class="absolute bottom-0 left-[1.45rem] top-12 w-0.5" style="background: color-mix(in srgb, {{ $c }} 30%, #fff);"></span>
-                            @endif
-                            <span class="grid size-12 shrink-0 place-items-center rounded-full bg-white font-display text-sm font-semibold" style="box-shadow: inset 0 0 0 2.5px {{ $c }}; color: {{ $deep }};">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span>
-                            <div class="flex-1 rounded-2xl bg-white px-4 py-3">
-                                <p class="text-sm font-bold" style="color: {{ $deep }};">{{ $step['time'] ?? '' }}</p>
-                                <p class="font-display text-lg font-medium leading-snug">{{ $step['label'] ?? '' }}</p>
-                            </div>
-                        </li>
-                    @endforeach
-                </ol>
-            </div>
-        </section>
-    @endif
 
     {{-- What the class learns --}}
     @if ($items->isNotEmpty())

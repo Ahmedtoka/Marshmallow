@@ -22,6 +22,7 @@ class GalleryAlbum extends Model
         'trips' => 'Trips',
         'camps' => 'Camps',
         'campus' => 'Our campus',
+        'reviews' => 'Parent reviews',
     ];
 
     public function getRouteKeyName(): string

@@ -10,7 +10,7 @@
 @section('content')
     <x-site.page-header
         :title="setting('about_title', $years.' years of happy mornings')"
-        :intro="setting('about_intro', 'Marshmallow is an English-language child development center in Giza for children from 9 months to school age, with branches in Hadayek Al Ahram and Sheikh Zayed.')" />
+        :intro="setting('about_intro', 'Marshmallow is an English-language child development center in Giza for children from 6 months to school age, with branches in Hadayek Al Ahram and Sheikh Zayed.')" />
 
     <section class="bg-white py-14 sm:py-20">
         <div class="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-2 lg:gap-16">

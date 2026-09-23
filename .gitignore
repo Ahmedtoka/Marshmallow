@@ -21,3 +21,6 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+/storage/client-photos
+.env.cloudways.bak
+.env.*.bak

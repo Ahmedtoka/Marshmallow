@@ -54,8 +54,8 @@ class ContentSeeder extends Seeder
                 ['Honored by Majesty International Schools', 'Recognized by one of our partner schools for our graduates’ readiness.', 'star', '#E8A317'],
             ],
             'services' => [
-                ['Opening hours', 'Sunday – Thursday, 7:00 am – 4:00 pm. Closed Friday and Saturday.', 'clock', '#2CBCC9'],
-                ['After-school care', '3:00 – 5:00 pm, with an extra hour until 6:00 pm on request.', 'moon', '#8479BD'],
+                ['Opening hours', 'Sunday – Thursday, 8:00 am – 4:00 pm. Closed Friday and Saturday.', 'clock', '#2CBCC9'],
+                ['After-school care', '4:00 – 6:00 pm on request, after the nursery day ends.', 'moon', '#8479BD'],
                 ['School year', 'September to June, with camps in every holiday.', 'calendar', '#7FA82A'],
             ],
         ];
@@ -94,6 +94,10 @@ class ContentSeeder extends Seeder
             ['Trip to Dolphina', 'trips', 'Our monthly trip to the dolphin show.', '2026-05-05', null],
             ['Summer Camp 2026', 'camps', 'Robotics, tie-dye and pottery at summer camp.', '2026-07-20', null],
             ['Our classrooms & garden', 'campus', 'A look at our classrooms, garden and play areas.', null, null],
+            ['Animals visit', 'trips', 'The animals came to us — feeding, petting and lots of questions.', null, null],
+            ['Circus day', 'trips', 'Acrobats, clowns and a lot of laughing.', null, null],
+            ['Marshmallow Schools Expo', 'celebrations', 'The international schools we invite so parents can choose the next step.', null, null],
+            ['Parents reviews', 'reviews', 'What Marshmallow families say about us, in their own words.', null, null],
         ];
         foreach ($albums as $i => [$title, $category, $description, $date, $branch]) {
             GalleryAlbum::updateOrCreate(['slug' => str($title)->slug()], [
@@ -101,6 +105,10 @@ class ContentSeeder extends Seeder
                 'event_date' => $date, 'branch_id' => $branch, 'sort_order' => $i,
             ]);
         }
+
+        // An album with no photos yet would show as an empty card, so keep it hidden until it has some.
+        GalleryAlbum::doesntHave('photos')->update(['is_visible' => false]);
+        GalleryAlbum::has('photos')->update(['is_visible' => true]);
 
         $testimonials = [
             ['Hadeer Raafat', 'Marshmallow parent', 'We are so grateful for all the love, care, and support you gave our son throughout his time at your nursery. He truly enjoyed every day, learned so much, and made wonderful memories. Thank you for creating such a happy and caring environment.', true],
@@ -117,9 +125,9 @@ class ContentSeeder extends Seeder
         }
 
         $faqs = [
-            ['What ages do you accept?', 'We welcome children from 9 months up to school age, in six classes grouped by age. Use the class finder with your child’s birthday to see their class.', 'admissions'],
+            ['What ages do you accept?', 'We welcome children from 6 months up to school age, in six classes grouped by age. Use the class finder with your child’s birthday to see their class.', 'admissions'],
             ['How do you decide my child’s class?', 'We use your child’s age on 1 October of the school year they are joining. If they join after October, we use their age on the day they start.', 'admissions'],
-            ['What are your opening hours?', 'Sunday to Thursday, 7:00 am to 4:00 pm. We are closed on Friday and Saturday. After-school care runs from 3:00 to 5:00 pm, with an extra hour until 6:00 pm on request.', 'daily'],
+            ['What are your opening hours?', 'Sunday to Thursday, 8:00 am to 4:00 pm. We are closed on Friday and Saturday. After-school care runs from 4:00 to 6:00 pm on request.', 'daily'],
             ['What language do you teach in?', 'Our main language is English. Children also have weekly French and Arabic classes.', 'learning'],
             ['What do children eat?', 'Four fresh, healthy meals a day: breakfast, a morning snack, a hot lunch and a dessert or afternoon snack.', 'daily'],
             ['Can I see the classrooms before enrolling?', 'Yes. Book a visit and see the classes live on the camera screens at reception between 10:00 am and 1:00 pm.', 'admissions'],

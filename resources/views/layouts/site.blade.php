@@ -31,7 +31,7 @@
         'messenger' => ['Messenger', setting('messenger_url')],
     ])->filter(fn ($s) => filled($s[1]));
 
-    $openingHours = 'Su-Th 07:00-16:00';
+    $openingHours = 'Su-Th 08:00-16:00';
     $jsonLd = [
         '@context' => 'https://schema.org',
         '@type' => ['ChildCare', 'Preschool'],

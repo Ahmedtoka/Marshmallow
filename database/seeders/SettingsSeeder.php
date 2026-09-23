@@ -28,9 +28,9 @@ class SettingsSeeder extends Seeder
             'recommend_percent' => '96',
             'reviews_count' => '329',
             'working_days' => 'Sunday – Thursday',
-            'working_hours' => '7:00 am – 4:00 pm',
+            'working_hours' => '8:00 am – 4:00 pm',
             'weekend' => 'Friday & Saturday',
-            'after_school' => 'After-school care 3:00 – 5:00 pm, plus an extra hour until 6:00 pm on request',
+            'after_school' => 'After-school care 4:00 – 6:00 pm on request',
             'tour_hours' => 'Camera tours at reception, 10:00 am – 1:00 pm, by appointment',
             'academic_year_note' => 'The school year runs from September to June',
             'teaching_language' => 'English',
@@ -39,7 +39,7 @@ class SettingsSeeder extends Seeder
             'admission_years' => '2026-2027,2027-2028',
             'announcement' => 'Admissions are open for 2026–2027. Spaces in each class are limited.',
             'announcement_visible' => '1',
-            'footer_about' => 'An English-language nursery in Giza where children from 9 months to school age learn through play, with small classes, four fresh meals a day and cameras in every room.',
+            'footer_about' => 'An English-language nursery in Giza where children from 6 months to school age learn through play. It features spacious, well-ventilated classrooms, four healthy meals a day and cameras in every room.',
             'hashtags' => '#Marshmallow_Child_Development_Center #LearningThroughPlay #EarlyChildhoodEducation',
             'ga4_id' => '',
             'meta_pixel_id' => '',
@@ -50,7 +50,7 @@ class SettingsSeeder extends Seeder
         ]);
 
         $sections = [
-            ['hero', 'Hero', 'Where little ones learn by playing', 'An English-language nursery in Hadayek Al Ahram and Sheikh Zayed for children from 9 months to school age. Fourteen years of happy mornings, messy hands and big first steps.', null, 'Book a visit', '/enroll'],
+            ['hero', 'Hero', 'Where little ones learn by playing', 'An English-language nursery in Hadayek Al Ahram and Sheikh Zayed for children from 6 months to school age. Fourteen years of happy mornings, messy hands and big first steps.', null, 'Book a visit', '/enroll'],
             ['class_finder', 'Class finder', 'Which class will your child join?', 'Enter your child’s birthday and we’ll show you their class and what their days will look like.', null, null, null],
             ['why', 'Why Marshmallow', 'What parents notice first', 'The things families tell us made them choose Marshmallow.', null, null, null],
             ['classes', 'Our classes', 'Six classes, one for every stage', 'Children are grouped by age so every activity fits where they are right now.', null, 'See all classes', '/classes'],
@@ -73,8 +73,8 @@ class SettingsSeeder extends Seeder
         }
 
         $pages = [
-            'home' => ['Home', 'Marshmallow Child Development Center | Nursery in Hadayek Al Ahram & Sheikh Zayed', 'English-language nursery and child development center in Giza for children from 9 months to school age. Play-based learning, cameras in every class, 4 healthy meals and monthly trips.'],
-            'classes' => ['Classes', 'Classes by age | Marshmallow Nursery', 'From Cupcake (9 months) to Cotton Candy (4 years to school age): find your child’s class and what they learn each day.'],
+            'home' => ['Home', 'Marshmallow Child Development Center | Nursery in Hadayek Al Ahram & Sheikh Zayed', 'English-language nursery and child development center in Giza for children from 6 months to school age. Play-based learning, cameras in every class, 4 healthy meals and monthly trips.'],
+            'classes' => ['Classes', 'Classes by age | Marshmallow Nursery', 'From Cupcake (6 months) to Cotton Candy (4 years to school age): find your child’s class and what they learn each day.'],
             'activities' => ['Activities', 'Activities & enrichment | Marshmallow Nursery', 'English, French and Arabic, gymnastics, science experiments, art, music, cooking, storytelling and a trip every month.'],
             'camps' => ['Camps', 'Summer, winter & holiday camps in Giza | Marshmallow', 'Holiday camps for ages 4–12: arts, pottery, science, robotics, programming and more, with meals included.'],
             'safety' => ['Safety & care', 'Safety, meals & transport | Marshmallow Nursery', 'Cameras in every class, bathroom and garden, security doors, fire alarms, four healthy meals a day and safe buses.'],

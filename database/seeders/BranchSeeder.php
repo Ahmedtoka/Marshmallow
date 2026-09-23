@@ -19,7 +19,7 @@ class BranchSeeder extends Seeder
             'address_note' => 'Khofo Gate',
             'map_url' => 'https://maps.app.goo.gl/LDdGxQaq8H63eSJ59',
             'map_embed_url' => 'https://www.google.com/maps?q='.rawurlencode('Street 5A, Khofo Gate, Hadayek Al Ahram, Giza').'&output=embed',
-            'working_hours' => 'Sun – Thu, 7:00 am – 4:00 pm',
+            'working_hours' => 'Sun – Thu, 8:00 am – 4:00 pm',
             'sort_order' => 1,
         ]);
 
@@ -33,7 +33,7 @@ class BranchSeeder extends Seeder
             'address_note' => 'Next to the District 10 mosque',
             'map_url' => 'https://maps.app.goo.gl/msV7sEuAVJ9jie8w8',
             'map_embed_url' => 'https://www.google.com/maps?q='.rawurlencode('District 10, El Mostasmer El Sagheer, Sheikh Zayed, Giza').'&output=embed',
-            'working_hours' => 'Sun – Thu, 7:00 am – 4:00 pm',
+            'working_hours' => 'Sun – Thu, 8:00 am – 4:00 pm',
             'sort_order' => 2,
         ]);
     }

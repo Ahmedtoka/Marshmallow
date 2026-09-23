@@ -47,7 +47,7 @@ class ClassroomSeeder extends Seeder
         $classes = [
             [
                 'name' => 'Cupcake', 'slug' => 'cupcake', 'icon' => 'cupcake', 'color' => '#E8177F',
-                'min_months' => 9, 'max_months' => 24, 'age_label' => '9 months – 2 years',
+                'min_months' => 6, 'max_months' => 24, 'age_label' => '6 months – 2 years',
                 'tagline' => 'Tiny explorers taking their first big steps',
                 'summary' => 'Our youngest class is all about feeling safe, loved and curious. Babies and young toddlers explore through their senses, hear English every day and start their first words, steps and friendships.',
                 'goals' => ['Settle in happily and build trust with their teachers', 'First words, gestures and songs in English', 'Crawling, walking, grasping and stacking', 'Healthy sleep and meal routines'],
@@ -196,14 +196,15 @@ class ClassroomSeeder extends Seeder
                 'is_active' => true,
             ]);
 
-            $sync = [];
+            // syncWithoutDetaching keeps existing rows (and the photos attached to them) while
+            // refreshing the wording, and never removes an activity the nursery added later.
             $order = 0;
             foreach ($data['activities'] as $slug => [$frequency, $details]) {
-                $sync[Activity::where('slug', $slug)->value('id')] = [
-                    'frequency' => $frequency, 'details' => $details, 'sort_order' => $order++,
-                ];
+                $activityId = Activity::where('slug', $slug)->value('id');
+                $classroom->activities()->syncWithoutDetaching([
+                    $activityId => ['frequency' => $frequency, 'details' => $details, 'sort_order' => $order++],
+                ]);
             }
-            $classroom->activities()->sync($sync);
         }
     }
 }

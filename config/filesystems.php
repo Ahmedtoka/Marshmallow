@@ -15,8 +15,9 @@ return [
 
     'default' => env('FILESYSTEM_DISK', 'local'),
 
-    // Disk for uploaded site photos. Use "public" on a VPS / Cloudways, or "s3" for object storage.
-    'media_disk' => env('MEDIA_DISK', 'public'),
+    // Disk for uploaded site photos. "public_media" keeps them inside public/media so they travel
+    // with the repository on deploy; use "s3" for object storage instead.
+    'media_disk' => env('MEDIA_DISK', 'public_media'),
 
     /*
     |--------------------------------------------------------------------------
@@ -39,6 +40,14 @@ return [
             'serve' => true,
             'throw' => false,
             'report' => false,
+        ],
+
+        'public_media' => [
+            'driver' => 'local',
+            'root' => public_path('media'),
+            'url' => env('APP_URL').'/media',
+            'visibility' => 'public',
+            'throw' => false,
         ],
 
         'public' => [

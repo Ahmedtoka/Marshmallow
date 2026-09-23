@@ -33,7 +33,7 @@ php artisan serve
 
 | Class | Age |
 |---|---|
-| Cupcake | 9 months – 2 years |
+| Cupcake | 6 months – 2 years |
 | Popcorn | 2 – 2.5 years |
 | Candy | 2.5 – 3 years |
 | Ice Cream | 3 – 3.5 years |
@@ -42,7 +42,7 @@ php artisan serve
 
 - The child's age is measured on **1 October** of the school year the parent picks (if that date has passed, today's age is used).
 - A child exactly on a boundary moves **up** to the older class.
-- Under 9 months: the lead is saved as **waitlist**.
+- Under 6 months: the lead is saved as **waitlist**.
 - Ranges, names, colors, activities and photos are all editable in Dashboard → Classes. Active classes cannot overlap.
 
 Logic lives in `app/Support/ClassFinder.php` (server) and is mirrored in the class finder on the website.
@@ -54,7 +54,21 @@ Upload from the dashboard — no code changes needed:
 - **Activities → edit:** general photos for an activity.
 - **Camps**, **Gallery albums**, **Homepage sections**, **Settings → About** also take images.
 
-Large photos are resized automatically to 1920px.
+Large photos are resized automatically to 1920px and stored in `public/media`, which is committed, so
+photos travel with the code on deploy.
+
+When the nursery sends a folder of photos (class / activity / gallery), import it in one go instead of
+uploading them one by one:
+
+```bash
+php artisan photos:import "storage/client-photos/Website"
+```
+
+Expected folder shape: `<Class>/<Activity>/*.jpg`, `<Class>/*.jpg`, `Gallery/<Album>/*.jpg`,
+`Parents Reviews/*.jpg`. Folder names are matched loosely (Fine and Gross Motor Skills both feed the
+"Fine & gross motor skills" activity), owners that already have photos are skipped, and `--fresh`
+replaces them. Afterwards regenerate `database/seeders/PhotoSeeder.php` so the server gets the same
+library on deploy.
 
 ## Visitor analytics
 
