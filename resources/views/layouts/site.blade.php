@@ -17,6 +17,7 @@
     $nav = [
         ['Classes', route('classes.index'), 'classes.*'],
         ['Gallery', route('gallery.index'), 'gallery.*'],
+        ['Reviews', route('reviews'), 'reviews'],
         ['Visit us', route('visit'), 'visit'],
     ];
 

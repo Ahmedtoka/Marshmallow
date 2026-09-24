@@ -21,6 +21,7 @@ Route::get('/', [Site\HomeController::class, 'index'])->name('home');
 Route::get('/about', [Site\PageController::class, 'about'])->name('about');
 Route::get('/safety', [Site\PageController::class, 'safety'])->name('safety');
 Route::get('/branches', [Site\PageController::class, 'branches'])->name('branches');
+Route::get('/reviews', [Site\PageController::class, 'reviews'])->name('reviews');
 // One page for "where are you and is my child safe with you", linked from the main menu.
 Route::get('/visit', [Site\PageController::class, 'visit'])->name('visit');
 

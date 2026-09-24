@@ -84,7 +84,9 @@ class HomeController extends Controller
      */
     private function activitiesWithPhotos(): Collection
     {
-        $activities = Activity::active()->with(['photos' => fn ($q) => $q->reorder()->orderBy('sort_order')->limit(1)])->get();
+        $activities = Activity::active()->where('is_featured', true)
+            ->with(['photos' => fn ($q) => $q->reorder()->orderBy('sort_order')->limit(1)])
+            ->get();
 
         $fromClasses = Photo::where('photos.photoable_type', 'classroom_activity')
             ->join('classroom_activity', 'classroom_activity.id', '=', 'photos.photoable_id')
@@ -92,10 +94,11 @@ class HomeController extends Controller
             ->orderBy('photos.sort_order')
             ->pluck('photos.path', 'classroom_activity.activity_id');
 
+        // A card without a photo would be a hole in the wall, so only activities we can show make it.
         return $activities->map(fn (Activity $activity) => (object) [
             'activity' => $activity,
             'photo' => $activity->cover_image ?: ($activity->photos->first()?->path ?: ($fromClasses[$activity->id] ?? null)),
-        ])->sortByDesc(fn ($item) => $item->photo ? 1 : 0)->values();
+        ])->filter(fn ($item) => $item->photo)->values();
     }
 
     /** The reassurance block: what keeps a child safe, fed and looked after. */

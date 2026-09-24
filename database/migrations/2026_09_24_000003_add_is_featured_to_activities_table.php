@@ -1,0 +1,23 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('activities', function (Blueprint $table) {
+            // Shown in the "What your child does with us" grid on the homepage.
+            $table->boolean('is_featured')->default(true)->after('is_active');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('activities', function (Blueprint $table) {
+            $table->dropColumn('is_featured');
+        });
+    }
+};

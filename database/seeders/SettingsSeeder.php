@@ -82,6 +82,7 @@ class SettingsSeeder extends Seeder
             'safety' => ['Safety & care', 'Safety, meals & transport | Marshmallow Nursery', 'Cameras in every class, bathroom and garden, security doors, fire alarms, four healthy meals a day and safe buses.'],
             'gallery' => ['Gallery', 'Photo gallery | Marshmallow Nursery', 'Graduations, trips, science days and celebrations at Marshmallow.'],
             'about' => ['About', 'About Marshmallow | 14 years of early childhood education', 'Fourteen years of play-based early childhood education in Giza.'],
+            'reviews' => ['Parent reviews', 'What parents say about Marshmallow Nursery', 'Real recommendations written by Marshmallow families on Facebook — 96% of parents recommend us.'],
             'visit' => ['Visit us', 'Visit Marshmallow Nursery | Hadayek Al Ahram & Sheikh Zayed', 'Our branches, opening hours, safety, meals and transport — and how to book your visit.'],
             'branches' => ['Branches & contact', 'Branches & contact | Marshmallow Nursery Hadayek Al Ahram & Sheikh Zayed', 'Addresses, phone numbers and maps for our Hadayek Al Ahram and Sheikh Zayed branches.'],
             'careers' => ['Careers', 'Careers & internships | Marshmallow Nursery', 'Join our team of teachers, or apply for our internship program for ages 15+.'],

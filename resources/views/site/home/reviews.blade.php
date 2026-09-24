@@ -17,12 +17,17 @@
             </div>
             <div>
                 <x-site.section-head :title="$section->title" :subtitle="$section->subtitle" />
-                @if (setting('facebook_url'))
-                    <a href="{{ setting('facebook_url') }}/reviews" target="_blank" rel="noopener"
-                       class="btn btn-outline mt-5" data-track="cta_click" data-track-label="Reviews – Read on Facebook">
-                        <x-icon name="facebook" class="size-4" /> Read them all on Facebook
+                <div class="mt-5 flex flex-wrap gap-2.5">
+                    <a href="{{ route('reviews') }}" class="btn btn-primary" data-track="cta_click" data-track-label="Reviews – Read all reviews">
+                        Read all reviews
                     </a>
-                @endif
+                    @if (setting('facebook_url'))
+                        <a href="{{ setting('facebook_url') }}/reviews" target="_blank" rel="noopener"
+                           class="btn btn-outline" data-track="cta_click" data-track-label="Reviews – Read on Facebook">
+                            <x-icon name="facebook" class="size-4" /> See them on Facebook
+                        </a>
+                    @endif
+                </div>
             </div>
         </div>
 

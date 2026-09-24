@@ -47,6 +47,16 @@ class PageController extends Controller
         ]);
     }
 
+    /** Every recommendation parents have written for us, newest first. */
+    public function reviews(): View
+    {
+        return view('site.pages.reviews', [
+            'seoKey' => 'reviews',
+            'reviews' => Testimonial::visible()->orderByDesc('reviewed_at')->get(),
+            'branches' => Branch::active()->get(),
+        ]);
+    }
+
     /**
      * Everything a parent needs before walking in: where we are, what keeps their child safe,
      * what they eat, how they get here, the questions everyone asks, and the booking form.
