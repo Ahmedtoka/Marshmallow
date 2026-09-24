@@ -1,5 +1,11 @@
 @extends('layouts.site')
 
+@if (session('success'))
+    @push('pixel')
+        <script>mmPixel('SubmitApplication', { content_name: 'Careers form' });</script>
+    @endpush
+@endif
+
 @section('content')
     <div x-data="{ position: @js((string) old('position', '')) }">
         <x-site.page-header title="Grow with Marshmallow" intro="We’re always looking for warm, patient and creative people who love working with young children. Join our teaching team, or start with our internship program from age 15." color="#7FA82A" />

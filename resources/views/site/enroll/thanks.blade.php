@@ -67,9 +67,19 @@
         window.addEventListener('load', function () {
             var key = 'mm_enroll_tracked_{{ $lead['id'] ?? 'x' }}';
             try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, '1'); } catch (e) {}
+            var details = @js([
+                'content_name' => $classroom?->name ?? 'No class yet',
+                'content_category' => \App\Models\Lead::INTERESTS[$lead['interest'] ?? 'enrollment'] ?? 'Enrollment',
+                'branch' => $branch?->name,
+            ]);
+
             if (window.mmTrack) window.mmTrack('form_submit', 'enroll');
-            if (window.gtag) window.gtag('event', 'generate_lead', { form: 'enroll' });
-            if (window.fbq) window.fbq('track', 'Lead');
+            if (window.mmPixel) {
+                window.mmPixel('Lead', details);
+                @if (($lead['interest'] ?? '') === 'tour')
+                    window.mmPixel('Schedule', details);
+                @endif
+            }
         });
     </script>
 @endpush

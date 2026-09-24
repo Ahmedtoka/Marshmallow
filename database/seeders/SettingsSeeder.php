@@ -42,7 +42,7 @@ class SettingsSeeder extends Seeder
             'footer_about' => 'An English-language nursery in Giza where children from 6 months to school age learn through play. It features spacious, well-ventilated classrooms, four healthy meals a day and cameras in every room.',
             'hashtags' => '#Marshmallow_Child_Development_Center #LearningThroughPlay #EarlyChildhoodEducation',
             'ga4_id' => '',
-            'meta_pixel_id' => '',
+            'meta_pixel_id' => '2078524479437850',
             'head_scripts' => '',
             'lead_notify_email' => 'admin@marshmallownursery.com',
             'lead_auto_assign' => '1',

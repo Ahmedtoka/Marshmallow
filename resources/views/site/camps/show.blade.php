@@ -12,6 +12,10 @@
     @section('og_image', media_url($camp->cover_image))
 @endif
 
+@push('pixel')
+    <script>mmPixel('ViewContent', { content_type: 'camp', content_name: @js($camp->title), content_category: @js($camp->seasonLabel()) });</script>
+@endpush
+
 @section('content')
     <x-site.page-header :title="$camp->title" :intro="$camp->summary" :color="$color" :back="route('camps.index')" back-label="All camps">
         <div class="mt-5 flex flex-wrap gap-2">

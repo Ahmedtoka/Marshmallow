@@ -11,6 +11,10 @@
     @section('og_image', media_url($classroom->cover_image))
 @endif
 
+@push('pixel')
+    <script>mmPixel('ViewContent', { content_type: 'class', content_name: @js($classroom->name), content_category: @js($classroom->ageRangeLabel()) });</script>
+@endpush
+
 @section('content')
     {{-- Header in the class color --}}
     <header class="relative overflow-hidden" style="background: color-mix(in srgb, {{ $c }} 11%, #fff);">

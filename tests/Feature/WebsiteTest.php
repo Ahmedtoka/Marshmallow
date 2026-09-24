@@ -37,6 +37,11 @@ class WebsiteTest extends TestCase
             'interest' => 'enrollment',
         ])->assertRedirect(route('enroll.thanks'));
 
+        // The thank-you page is what tells Meta and Google a booking happened.
+        $this->get(route('enroll.thanks'))
+            ->assertOk()
+            ->assertSee("mmPixel('Lead'", false);
+
         $lead = Lead::firstOrFail();
         $this->assertSame('01005557788', $lead->phone);
         $this->assertSame('popcorn', $lead->classroom?->slug);

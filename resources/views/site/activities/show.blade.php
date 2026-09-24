@@ -8,6 +8,10 @@
     @section('og_image', $cover)
 @endif
 
+@push('pixel')
+    <script>mmPixel('ViewContent', { content_type: 'activity', content_name: @js($activity->name), content_category: @js($activity->categoryLabel()) });</script>
+@endpush
+
 @section('content')
     <x-site.page-header :title="$activity->name" :intro="$activity->summary" :color="$color" :back="route('activities.index')" back-label="All activities">
         <p class="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 font-bold">

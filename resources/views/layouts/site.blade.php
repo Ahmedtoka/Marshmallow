@@ -126,6 +126,20 @@
         <noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id={{ urlencode($pixel) }}&ev=PageView&noscript=1"></noscript>
     @endif
 
+    {{-- One helper for page-level conversions: mmPixel('Lead', {...}) sends to the Meta pixel and
+         to GA4 when either is configured, and does nothing when neither is. --}}
+    <script>
+        window.mmPixel = function (event, params, standard) {
+            params = params || {};
+            if (window.fbq) {
+                window.fbq(standard === false ? 'trackCustom' : 'track', event, params);
+            }
+            if (window.gtag) {
+                window.gtag('event', event, params);
+            }
+        };
+    </script>
+
     {!! setting('head_scripts') !!}
 
     <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
@@ -331,6 +345,7 @@
         </div>
     @endif
 
+    @stack('pixel')
     @stack('scripts')
 </body>
 </html>

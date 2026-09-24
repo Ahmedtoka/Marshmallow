@@ -116,8 +116,40 @@ if (endpoint) {
     window.addEventListener('pagehide', () => ping(true));
     setInterval(() => document.visibilityState === 'visible' && ping(), 15000);
 
-    // ---- Events ----
+    /* ---- Events ----
+     * Each action is recorded in our own dashboard and, when the nursery has a Meta pixel or GA4
+     * configured, forwarded there too: phone and WhatsApp taps as Contact, the class finder and the
+     * rest as clearly named custom events. Nothing is sent when neither tool is set up.
+     */
+    const META = {
+        call_click: ['Contact', true, (label) => ({ contact_method: 'phone', branch: branchOf(label) })],
+        whatsapp_click: ['Contact', true, (label) => ({ contact_method: 'whatsapp', branch: branchOf(label) })],
+        email_click: ['Contact', true, () => ({ contact_method: 'email' })],
+        map_click: ['FindLocation', true, (label) => ({ branch: branchOf(label) })],
+        class_finder: ['FindClass', false, (label, props) => ({ class_name: label, months: props && props.months })],
+        form_start: ['StartForm', false, (label) => ({ form: label })],
+        gallery_open: ['ViewGallery', false, (label) => ({ album: label })],
+        faq_open: ['ViewFaq', false, (label) => ({ question: label })],
+        cta_click: ['ClickCTA', false, (label) => ({ cta: label })],
+    };
+
+    // "Call Hadayek Al Ahram" is our own button label; Meta only needs the branch.
+    const branchOf = (label) => String(label || '').replace(/^(call|whatsapp|map|directions)\s+/i, '').trim();
+
+    const forward = (name, label, props) => {
+        const mapping = META[name];
+        if (!mapping) return;
+
+        const [event, standard, params] = mapping;
+        const payload = params ? params(label, props) : {};
+
+        if (window.fbq) window.fbq(standard ? 'track' : 'trackCustom', event, payload);
+        if (window.gtag) window.gtag('event', event, payload);
+    };
+
     const track = (name, label = null, props = null, value = null) => {
+        forward(name, label, props);
+
         const event = { type: 'event', name, label: label ? String(label).slice(0, 190) : null, value, props, path: location.pathname };
         if (pageViewId) return send({ ...event, pv: pageViewId });
         queue.push(event);
