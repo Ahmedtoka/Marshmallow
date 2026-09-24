@@ -29,5 +29,10 @@
             @endif
         </div>
         <a href="{{ route('enroll', ['branch' => $branch->slug, 'interest' => 'tour']) }}" class="link mt-5 inline-block" data-track="cta_click" data-track-label="{{ $place ?? 'Branches' }} – Book a visit at {{ $branch->name }}">Book a visit at {{ $branch->name }}</a>
+
+        @if (($map ?? false) && $branch->map_embed_url)
+            <iframe src="{{ $branch->map_embed_url }}" title="Map of {{ $branch->name }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                    class="mt-5 h-56 w-full rounded-[1.25rem] border-2 border-line sm:h-64"></iframe>
+        @endif
     </div>
 </article>

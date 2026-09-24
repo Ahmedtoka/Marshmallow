@@ -23,7 +23,7 @@
             <x-site.section-head title="Where to find us" :subtitle="setting('tour_hours')" />
             <div class="mt-8 grid gap-6 lg:grid-cols-2">
                 @foreach ($branches as $branch)
-                    @include('site.partials.branch-card', ['branch' => $branch, 'color' => $loop->first ? '#E8177F' : '#2CBCC9'])
+                    @include('site.partials.branch-card', ['branch' => $branch, 'color' => $loop->first ? '#E8177F' : '#2CBCC9', 'map' => true, 'place' => 'Visit page'])
                 @endforeach
             </div>
         </div>

@@ -3,17 +3,17 @@
     // exactly full at each size. The rest of the photos are the pool the wall keeps swapping in.
     $pool = $heroPhotos->map(fn ($photo) => thumb_url($photo->path, 520))->filter()->values();
     $tiles = 20;
-    $big = [0 => 'col-span-2 row-span-2', 5 => 'col-span-2 row-span-2', 10 => 'sm:col-span-2 sm:row-span-2', 15 => 'lg:col-span-2 lg:row-span-2'];
+    $big = [0 => 'col-span-2 row-span-2', 5 => 'sm:col-span-2 sm:row-span-2', 10 => 'sm:col-span-2 sm:row-span-2', 15 => 'lg:col-span-2 lg:row-span-2'];
 @endphp
 <section class="relative isolate overflow-hidden bg-ink">
     @if ($pool->isNotEmpty())
         <div class="absolute inset-0" x-data="heroMosaic(@js($pool), {{ $tiles }})" aria-hidden="true">
-            <div class="grid h-full grid-cols-4 grid-rows-4 gap-1.5 p-1.5 sm:grid-cols-6 lg:grid-cols-8">
+            <div class="grid h-full grid-cols-3 grid-rows-4 gap-1.5 p-1.5 sm:grid-cols-6 lg:grid-cols-8">
                 @for ($i = 0; $i < $tiles; $i++)
                     <div @class([
                             'relative overflow-hidden rounded-[0.85rem]',
                             $big[$i] ?? '',
-                            'hidden sm:block' => $i >= 10 && $i < 15,
+                            'hidden sm:block' => $i >= 9 && $i < 15,
                             'hidden lg:block' => $i >= 15,
                         ])>
                         <img :src="current[{{ $i }}]" alt="" loading="{{ $i < 6 ? 'eager' : 'lazy' }}"
@@ -72,10 +72,10 @@
             @foreach ([
                 [setting('years_experience'), 'years in Giza'],
                 [setting('recommend_percent') ? setting('recommend_percent').'%' : null, 'of parents recommend us'],
-                [$branches->count() ?: null, \Illuminate\Support\Str::plural('branch', $branches->count()).' · '.$classrooms->count().' classes'],
+                [$classrooms->count() ?: null, 'classes by age'],
             ] as [$value, $label])
                 @if ($value)
-                    <div class="px-2 py-5 text-center sm:py-7">
+                    <div class="px-2 pb-7 pt-5 text-center sm:py-7">
                         <dd class="font-display text-3xl font-semibold text-sun sm:text-5xl">{{ $value }}</dd>
                         <dt class="mt-1 text-xs font-bold text-white/70 sm:text-sm">{{ $label }}</dt>
                     </div>
