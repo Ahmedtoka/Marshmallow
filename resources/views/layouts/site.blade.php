@@ -217,7 +217,8 @@
 
     <footer class="mt-auto bg-ink text-white/85">
         <div class="mx-auto max-w-6xl px-5 pb-28 pt-14 sm:px-8 sm:pb-12">
-            <div class="grid gap-10 lg:grid-cols-[1.3fr_1fr_1.6fr]">
+            <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12">
+                {{-- Who we are --}}
                 <div>
                     <p class="font-display text-2xl font-semibold text-white">{{ setting('short_name', 'Marshmallow') }}</p>
                     <p class="mt-1 font-display text-sun">{{ setting('tagline', 'A Unique Way of Learning') }}</p>
@@ -242,50 +243,53 @@
                     @endif
                 </div>
 
-                <div class="grid grid-cols-2 gap-8 lg:grid-cols-1">
-                    <nav aria-label="Footer">
-                        <p class="font-display text-lg font-semibold text-white">Explore</p>
-                        <ul class="mt-3 space-y-2">
-                            @foreach ($nav as [$label, $url, $pattern])
-                                <li><a href="{{ $url }}" class="hover:text-white hover:underline">{{ $label }}</a></li>
-                            @endforeach
-                            @foreach ($footerNav as [$label, $url])
-                                <li><a href="{{ $url }}" class="hover:text-white hover:underline">{{ $label }}</a></li>
-                            @endforeach
-                            <li><a href="{{ route('enroll') }}" class="hover:text-white hover:underline">Book a visit</a></li>
-                        </ul>
-                    </nav>
-                    <div>
-                        <p class="font-display text-lg font-semibold text-white">Opening hours</p>
-                        <dl class="mt-3 space-y-2.5 text-[0.95rem]">
-                            @if (setting('working_days'))
-                                <div><dt class="font-bold text-white">{{ setting('working_days') }}</dt><dd>{{ setting('working_hours') }}</dd></div>
-                            @endif
-                            @if (setting('weekend'))
-                                <div><dt class="font-bold text-white">{{ setting('weekend') }}</dt><dd>Closed</dd></div>
-                            @endif
-                            @if (setting('after_school'))
-                                <div><dd>{{ setting('after_school') }}</dd></div>
-                            @endif
-                        </dl>
-                    </div>
-                </div>
+                {{-- Where to go --}}
+                <nav aria-label="Footer">
+                    <p class="font-display text-lg font-semibold text-white">Explore</p>
+                    <ul class="mt-3 space-y-2">
+                        @foreach ($nav as [$label, $url, $pattern])
+                            <li><a href="{{ $url }}" class="hover:text-white hover:underline">{{ $label }}</a></li>
+                        @endforeach
+                        @foreach ($footerNav as [$label, $url])
+                            <li><a href="{{ $url }}" class="hover:text-white hover:underline">{{ $label }}</a></li>
+                        @endforeach
+                        <li><a href="{{ route('enroll') }}" class="hover:text-white hover:underline">Book a visit</a></li>
+                    </ul>
+                </nav>
 
-                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                    @foreach ($siteBranches as $branch)
-                        <div class="rounded-[1.4rem] border-2 border-white/15 p-5">
-                            <p class="font-display text-lg font-semibold text-white">{{ $branch->name }}</p>
-                            <p class="mt-1.5 text-[0.95rem] leading-relaxed">{{ $branch->address }}</p>
-                            <div class="mt-4 flex flex-wrap gap-2">
-                                <a href="{{ $branch->telLink() }}" class="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-2 text-sm font-bold text-ink hover:bg-sun-100" data-track-label="Call {{ $branch->name }}">
-                                    <x-icon name="phone" class="size-4 text-pink" /> {{ $branch->phone }}
+                {{-- When we are open, and how to reach us. The branch details live on the page above. --}}
+                <div>
+                    <p class="font-display text-lg font-semibold text-white">Opening hours</p>
+                    <dl class="mt-3 space-y-2.5 text-[0.95rem]">
+                        @if (setting('working_days'))
+                            <div><dt class="font-bold text-white">{{ setting('working_days') }}</dt><dd>{{ setting('working_hours') }}</dd></div>
+                        @endif
+                        @if (setting('weekend'))
+                            <div><dt class="font-bold text-white">{{ setting('weekend') }}</dt><dd>Closed</dd></div>
+                        @endif
+                        @if (setting('after_school'))
+                            <div><dd>{{ setting('after_school') }}</dd></div>
+                        @endif
+                    </dl>
+
+                    <ul class="mt-6 space-y-2 text-[0.95rem]">
+                        @foreach ($siteBranches as $branch)
+                            <li>
+                                <a href="{{ $branch->telLink() }}" class="inline-flex items-center gap-2 hover:text-white" data-track-label="Call {{ $branch->name }}">
+                                    <x-icon name="phone" class="size-4 text-pink" />
+                                    <span class="text-white/70">{{ $branch->short_name ?: $branch->name }}</span>
+                                    <span class="font-bold text-white">{{ $branch->phone }}</span>
                                 </a>
-                                <a href="{{ $branch->whatsappLink('Hello Marshmallow '.$branch->name.', I would like to ask about your nursery.') }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 rounded-full border-2 border-white/25 px-3.5 py-1.5 text-sm font-bold text-white hover:border-white" data-track-label="WhatsApp {{ $branch->name }}">
-                                    <x-icon name="whatsapp" class="size-4" /> WhatsApp
+                            </li>
+                        @endforeach
+                        @if (setting('email'))
+                            <li>
+                                <a href="mailto:{{ setting('email') }}" class="inline-flex items-center gap-2 hover:text-white">
+                                    <x-icon name="mail" class="size-4 text-pink" /> {{ setting('email') }}
                                 </a>
-                            </div>
-                        </div>
-                    @endforeach
+                            </li>
+                        @endif
+                    </ul>
                 </div>
             </div>
 
