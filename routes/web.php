@@ -39,10 +39,10 @@ Route::get('/gallery', [Site\GalleryController::class, 'index'])->name('gallery.
 Route::get('/gallery/{album:slug}', [Site\GalleryController::class, 'show'])->name('gallery.show');
 
 Route::get('/careers', [Site\CareerController::class, 'index'])->name('careers');
-Route::post('/careers', [Site\CareerController::class, 'apply'])->name('careers.apply')->middleware('throttle:5,1');
+Route::post('/careers', [Site\CareerController::class, 'apply'])->name('careers.apply')->middleware('throttle:15,1');
 
 Route::get('/enroll', [Site\EnrollController::class, 'create'])->name('enroll');
-Route::post('/enroll', [Site\EnrollController::class, 'store'])->name('enroll.store')->middleware('throttle:8,1');
+Route::post('/enroll', [Site\EnrollController::class, 'store'])->name('enroll.store')->middleware('throttle:30,1');
 Route::get('/thank-you', [Site\EnrollController::class, 'thanks'])->name('enroll.thanks');
 
 Route::get('/sitemap.xml', [Site\SitemapController::class, 'sitemap'])->name('sitemap');
