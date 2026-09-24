@@ -10,7 +10,7 @@
                 <li class="w-[42vw] min-w-[9.5rem] shrink-0 snap-start sm:w-auto sm:min-w-0">
                     <a href="{{ route('activities.show', $item->activity) }}" class="group block"
                        data-track="cta_click" data-track-label="What we do – {{ $item->activity->name }}">
-                        <x-site.photo :src="media_url($item->photo)" :alt="$item->activity->name" ratio="1/1"
+                        <x-site.photo :src="thumb_url($item->photo, 520)" :alt="$item->activity->name" ratio="1/1"
                                       :color="$color" :icon="$item->activity->icon" rounded="rounded-[1.35rem]"
                                       class="transition-transform duration-300 group-hover:-translate-y-1" />
                         <p class="mt-2.5 flex items-center gap-2 px-0.5 font-display text-[1.02rem] font-medium leading-tight">

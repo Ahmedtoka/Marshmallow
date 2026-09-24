@@ -8,7 +8,7 @@
                     <li @class(['group', 'col-span-2 row-span-2' => $loop->first || $loop->index === 6])>
                         <a href="{{ route('gallery.show', $item->album) }}" class="block"
                            data-track="cta_click" data-track-label="Gallery – {{ $item->album->title }}">
-                            <img src="{{ $item->photo->url() }}" alt="{{ $item->photo->alt }}" loading="lazy"
+                            <img src="{{ thumb_url($item->photo->path, 520) }}" alt="{{ $item->photo->alt }}" loading="lazy"
                                  class="aspect-square w-full rounded-[1.35rem] object-cover transition-transform duration-300 group-hover:-translate-y-1">
                             <p class="mt-2 px-0.5 text-[0.95rem] font-bold leading-snug">
                                 {{ $item->photo->caption ?: $item->album->title }}

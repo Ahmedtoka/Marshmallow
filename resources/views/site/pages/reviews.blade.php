@@ -51,7 +51,7 @@
                         <li class="break-inside-avoid rounded-[1.4rem] border-2 border-line-soft bg-white p-5">
                             <div class="flex items-start gap-3">
                                 @if ($review->photo)
-                                    <img src="{{ media_url($review->photo) }}" alt="" loading="lazy" class="size-11 shrink-0 rounded-full object-cover">
+                                    <img src="{{ thumb_url($review->photo, 160) }}" alt="" loading="lazy" class="size-11 shrink-0 rounded-full object-cover">
                                 @else
                                     <span class="grid size-11 shrink-0 place-items-center rounded-full font-display text-lg font-semibold text-white" style="background: {{ $color }}">{{ $initial }}</span>
                                 @endif

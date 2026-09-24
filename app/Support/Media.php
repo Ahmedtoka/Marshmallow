@@ -93,8 +93,12 @@ class Media
         $canvas = imagecreatetruecolor($width, $height);
         imagecopyresampled($canvas, $image, 0, 0, 0, 0, $width, $height, imagesx($image), imagesy($image));
 
+        // Progressive JPEG at a modest quality: these are grid tiles, not prints, and a parent on
+        // mobile data pays for every kilobyte.
+        imageinterlace($canvas, true);
+
         ob_start();
-        imagejpeg($canvas, null, 78);
+        imagejpeg($canvas, null, 68);
         $disk->put($thumb, (string) ob_get_clean(), 'public');
 
         return $disk->url($thumb);

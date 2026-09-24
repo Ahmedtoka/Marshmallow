@@ -124,7 +124,7 @@
                                 data-lightbox-item data-src="{{ $item->photo->url() }}"
                                 data-alt="{{ $item->photo->alt ?: $item->label }}" data-caption="{{ $item->photo->caption ?: $item->label }}"
                                 class="group w-[78%] shrink-0 snap-center text-left sm:w-[46%] lg:w-[31.5%]">
-                            <img src="{{ $item->photo->url() }}" alt="{{ $item->photo->alt ?: $item->label }}" loading="lazy"
+                            <img src="{{ thumb_url($item->photo->path, 520) }}" alt="{{ $item->photo->alt ?: $item->label }}" loading="lazy"
                                  class="aspect-[4/3] w-full rounded-[1.5rem] object-cover transition-transform duration-300 group-hover:-translate-y-1">
                             <span class="mt-2.5 flex items-center gap-2 px-0.5 font-bold">
                                 <span class="size-2.5 shrink-0 rounded-full" style="background: {{ $c }}"></span>

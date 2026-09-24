@@ -13,7 +13,7 @@
                 <li class="mb-3 break-inside-avoid sm:mb-4">
                     <button type="button" @click="show({{ $i }})" data-lightbox-item data-src="{{ $photo->url() }}" data-alt="{{ $photo->alt ?: $photo->caption ?: $title }}" data-caption="{{ $photo->caption }}"
                         class="group block w-full overflow-hidden rounded-[1.25rem] text-left">
-                        <img src="{{ $photo->url() }}" alt="{{ $photo->alt ?: $photo->caption ?: $title }}" loading="lazy" decoding="async"
+                        <img src="{{ thumb_url($photo->path, 520) }}" alt="{{ $photo->alt ?: $photo->caption ?: $title }}" loading="lazy" decoding="async"
                             @if ($photo->width && $photo->height) width="{{ $photo->width }}" height="{{ $photo->height }}" @endif
                             class="h-auto w-full rounded-[1.25rem] bg-blush object-cover transition-transform duration-300 group-hover:scale-[1.02]">
                         <span class="sr-only">Open photo {{ $i + 1 }}</span>

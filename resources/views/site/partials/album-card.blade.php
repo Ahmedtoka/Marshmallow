@@ -2,7 +2,7 @@
     $albumColors = ['activities' => '#E8177F', 'celebrations' => '#8479BD', 'graduation' => '#2CBCC9', 'trips' => '#7FA82A', 'camps' => '#E8A317', 'campus' => '#C0479A'];
     $albumIcons = ['activities' => 'blocks', 'celebrations' => 'balloon', 'graduation' => 'medal', 'trips' => 'bus', 'camps' => 'sun', 'campus' => 'leaf'];
     $color = $albumColors[$album->category] ?? '#E8177F';
-    $cover = media_url($album->cover_image) ?? $album->photos->first()?->url();
+    $cover = thumb_url($album->cover_image, 520) ?? thumb_url($album->photos->first()?->path, 520);
     $large = $large ?? false;
 @endphp
 <a href="{{ route('gallery.show', $album) }}" class="group relative block h-full" data-track="cta_click" data-track-label="{{ $place ?? 'Gallery' }} – {{ $album->title }}">

@@ -38,7 +38,7 @@
                            data-track="cta_click" data-track-label="About – {{ $album->title }}">
                             <div class="grid grid-cols-4 gap-2">
                                 @foreach ($album->photos->take(4) as $photo)
-                                    <img src="{{ $photo->url() }}" alt="{{ $photo->alt }}" loading="lazy"
+                                    <img src="{{ thumb_url($photo->path, 520) }}" alt="{{ $photo->alt }}" loading="lazy"
                                          class="aspect-square w-full rounded-2xl object-cover">
                                 @endforeach
                             </div>
