@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
+use App\Models\ClassroomActivity;
+use App\Models\Photo;
 use App\Models\Section;
 use Illuminate\Contracts\View\View;
 
@@ -36,9 +38,32 @@ class ActivityController extends Controller
 
         $activity->load(['photos', 'classrooms' => fn ($q) => $q->where('is_active', true)]);
 
+        // Most photos are taken of this activity *inside a class* (gymnastics in Candy, and so on).
+        // Fall back to those so an activity page is never empty just because it has no photos of its own.
+        $photos = $activity->photos;
+
+        if ($photos->isEmpty()) {
+            $pivots = ClassroomActivity::with('classroom:id,name')->where('activity_id', $activity->id)->get()->keyBy('id');
+
+            $photos = Photo::where('photoable_type', 'classroom_activity')
+                ->whereIn('photoable_id', $pivots->keys())
+                ->orderBy('photoable_id')
+                ->orderBy('sort_order')
+                ->get()
+                ->each(fn (Photo $photo) => $photo->caption ??= 'In the '.$pivots[$photo->photoable_id]->classroom->name.' class');
+        }
+
+        $cover = media_url($activity->cover_image);
+
+        if (! $cover && $photos->isNotEmpty()) {
+            $cover = $photos->shift()->url();
+        }
+
         return view('site.activities.show', [
             'seoKey' => 'activities',
             'activity' => $activity,
+            'photos' => $photos,
+            'cover' => $cover,
             'related' => Activity::active()
                 ->where('category', $activity->category)
                 ->whereKeyNot($activity->id)

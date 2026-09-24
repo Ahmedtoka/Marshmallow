@@ -4,8 +4,8 @@
 
 @section('title', $activity->name.' | Activities at Marshmallow Nursery')
 @section('description', \Illuminate\Support\Str::limit((string) ($activity->summary ?: $activity->description), 160))
-@if ($activity->cover_image)
-    @section('og_image', media_url($activity->cover_image))
+@if ($cover)
+    @section('og_image', $cover)
 @endif
 
 @section('content')
@@ -21,8 +21,8 @@
                 @if ($activity->description && $activity->description !== $activity->summary)
                     <div class="prose-mm text-lg text-ink-soft">{!! nl2br(e($activity->description)) !!}</div>
                 @endif
-                @if (media_url($activity->cover_image))
-                    <x-site.photo :src="media_url($activity->cover_image)" :alt="$activity->name" ratio="16/10" :color="$color" class="mt-6" />
+                @if ($cover)
+                    <x-site.photo :src="$cover" :alt="$activity->name" ratio="16/10" :color="$color" class="mt-6" />
                 @endif
             </div>
 
@@ -60,7 +60,7 @@
             <x-site.section-head title="Photos" />
             <div class="mt-8">
                 @include('site.partials.photo-grid', [
-                    'photos' => $activity->photos,
+                    'photos' => $photos,
                     'title' => $activity->name,
                     'color' => $color,
                     'icon' => $activity->icon,
