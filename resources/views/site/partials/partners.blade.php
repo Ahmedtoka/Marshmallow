@@ -1,22 +1,30 @@
-<ul class="mt-8 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+{{-- Logo wall of the schools our graduates move on to. Params: $partners --}}
+@php
+    $tile = fn ($partner) => implode(' ', [
+        'grid h-24 place-items-center rounded-[1.25rem] border-2 px-4 transition-colors',
+        $partner->on_dark ? 'border-ink bg-ink hover:border-pink' : 'border-line-soft bg-white hover:border-pink-200',
+    ]);
+@endphp
+<ul class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
     @foreach ($partners as $partner)
+        @php $logo = media_url($partner->logo); @endphp
         <li>
-            @php $logo = media_url($partner->logo); @endphp
             @if ($partner->website)
-                <a href="{{ $partner->website }}" target="_blank" rel="noopener" class="block">
-            @endif
-            @if ($logo)
-                <span class="grid h-16 place-items-center rounded-2xl border-2 border-line-soft bg-white px-4">
-                    <img src="{{ $logo }}" alt="{{ $partner->name }}" loading="lazy" class="max-h-11 w-auto max-w-[9rem] object-contain">
-                </span>
+                <a href="{{ $partner->website }}" target="_blank" rel="noopener" class="{{ $tile($partner) }}" data-track-label="Partner school – {{ $partner->name }}">
             @else
-                <span class="inline-flex items-center gap-2 rounded-full border-2 border-line bg-white px-4 py-2 font-display font-medium text-ink-soft">
-                    <x-icon :name="$partner->type === 'award' ? 'medal' : ($partner->type === 'certification' ? 'shield' : 'book')" class="size-4 text-teal" />
-                    {{ $partner->name }}
-                </span>
+                <div class="{{ $tile($partner) }}">
             @endif
+
+            @if ($logo)
+                <img src="{{ $logo }}" alt="{{ $partner->name }}" loading="lazy" class="max-h-14 w-auto max-w-full object-contain">
+            @else
+                <span class="text-center font-display text-[0.95rem] font-medium leading-snug {{ $partner->on_dark ? 'text-white' : 'text-ink-soft' }}">{{ $partner->name }}</span>
+            @endif
+
             @if ($partner->website)
                 </a>
+            @else
+                </div>
             @endif
         </li>
     @endforeach

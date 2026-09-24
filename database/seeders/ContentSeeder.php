@@ -123,9 +123,29 @@ class ContentSeeder extends Seeder
             }
         }
 
-        $schools = ['Majesty International Schools', 'Knowledge Valley International School (KVS)', 'Kipling School', 'Emerald International School (EIS)', 'SKILLS – Suad Kafafi International Language School', 'Core West College', 'Stanford Egypt Schools West Cairo', 'Winchester British International School', 'Marvel International School (MIS)', 'Notion International School (NIS)'];
-        foreach ($schools as $i => $school) {
-            Partner::updateOrCreate(['name' => $school], ['type' => 'school', 'sort_order' => $i]);
+        // The schools our graduates move on to, with the logos taken from their own websites
+        // (see `php artisan partners:import-logos`); the files live in public/media.
+        $schools = [
+            ['Majesty International Schools', 'https://majestyschools.com/', 'uploads/partners/aWko9MCARrQ5H2JRDR6a9AYE.png', true],
+            ['Knowledge Valley International School (KVS)', 'https://www.kvs.edu.eg/', 'uploads/partners/u5eP5SuSsO9TNmzqNsBQnQHu.png', false],
+            ['Kipling School', 'https://svs.edu.eg/', 'uploads/partners/d9uspxHlJ0OHlUAiSzOnZCnc.png', false],
+            ['Emerald International School (EIS)', 'https://www.facebook.com/eiseducation/', 'uploads/partners/trZc4GVSOfnFAKR9GcxsnUl6.png', false],
+            ['SKILLS – Suad Kafafi International Language School', 'https://www.skills.edu.eg/', 'uploads/partners/nPkX5XNDpIKB2OwZh9h9GAch.png', false],
+            ['Core West College', 'https://corewestcollege.com/', 'uploads/partners/SJ6DDWAD0rvgDnl16CNondfL.png', false],
+            ['Stanford Egypt Schools West Cairo', 'https://stanfordegypt.com/', 'uploads/partners/OiGxhxVb9YKfpX1eBy20xRLk.png', false],
+            ['Winchester British International School', 'https://www.facebook.com/winchesterbritishinternationalschool/', 'uploads/partners/OIJTGlAcVGPGgNcVA5JZnt9F.png', false],
+            ['Marvel International School (MIS)', 'https://marvel.edu.eg/', 'uploads/partners/ERNkxK0l8BL8nTZ0zYMQC5xl.png', false],
+            ['Notion International School (NIS)', 'https://notion-edu.com/', 'uploads/partners/xNO2dwFE5bVSuKM0JfWKSWW4.png', false],
+        ];
+
+        foreach ($schools as $i => [$name, $website, $logo, $onDark]) {
+            Partner::updateOrCreate(['name' => $name], [
+                'type' => 'school',
+                'website' => $website,
+                'logo' => $logo,
+                'on_dark' => $onDark,
+                'sort_order' => $i,
+            ]);
         }
 
         $faqs = [
