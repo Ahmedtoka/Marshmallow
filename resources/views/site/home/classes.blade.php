@@ -1,42 +1,48 @@
-@if ($classrooms->isNotEmpty())
-    <section class="{{ $tint ? 'bg-blush' : 'bg-white' }} overflow-hidden py-16 sm:py-24">
-        <div class="mx-auto max-w-6xl px-5 sm:px-8">
-            <div class="flex flex-wrap items-end justify-between gap-5">
-                <x-site.section-head :title="$section->title" :subtitle="$section->subtitle" />
-                @if ($section->button_text)
-                    <a href="{{ url($section->button_url ?: route('classes.index')) }}" class="btn btn-outline" data-track="cta_click" data-track-label="Classes – {{ $section->button_text }}">{{ $section->button_text }}</a>
-                @endif
-            </div>
+<section class="{{ $tint ? 'bg-blush' : 'bg-white' }} py-16 sm:py-24">
+    <div class="mx-auto max-w-6xl px-5 sm:px-8">
+        <x-site.section-head :title="$section->title" :subtitle="$section->subtitle" align="center" />
 
-            {{-- A growing path: each class stands a little taller than the one before --}}
-            <div class="relative mt-10">
-                <ol class="-mx-5 flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto px-5 pb-2 scrollbar-none sm:-mx-8 sm:px-8 lg:mx-0 lg:grid lg:grid-cols-6 lg:gap-4 lg:overflow-visible lg:px-0">
-                    @foreach ($classrooms as $i => $class)
-                        <li class="flex w-[44%] min-w-[9.5rem] shrink-0 snap-start sm:w-[30%] lg:w-auto">
-                            <a href="{{ route('classes.show', $class) }}" class="group flex w-full flex-col items-center text-center" data-track="cta_click" data-track-label="Classes path – {{ $class->name }}">
-                                <span class="grid size-20 place-items-center rounded-full bg-white transition-transform duration-200 group-hover:-translate-y-1" style="box-shadow: 0 0 0 3px color-mix(in srgb, {{ $class->color }} 22%, #fff);">
-                                    <x-site.candy :name="$class->icon" :color="$class->color" class="size-14" />
-                                </span>
-                                <h3 class="mt-3 font-display text-xl font-semibold leading-tight group-hover:underline" style="color: color-mix(in srgb, {{ $class->color }} 75%, #33307A);">{{ $class->name }}</h3>
-                                <p class="mt-0.5 text-sm font-bold">{{ $class->ageRangeLabel() }}</p>
-                                @if ($class->tagline)
-                                    <p class="mt-1.5 line-clamp-3 px-1 text-sm leading-snug text-ink-soft">{{ $class->tagline }}</p>
-                                @endif
-                                <span class="mt-auto block w-full pt-4" aria-hidden="true">
-                                    <span class="block w-full rounded-t-[1.25rem] border-2 border-b-0" style="height: {{ 2.5 + $i * 1.35 }}rem; background: color-mix(in srgb, {{ $class->color }} 16%, #fff); border-color: color-mix(in srgb, {{ $class->color }} 38%, #fff);"></span>
-                                </span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ol>
-                <div class="h-1 rounded-full bg-line" aria-hidden="true"></div>
-                <p class="mt-3 flex items-center justify-between text-sm font-bold text-ink-muted" aria-hidden="true">
-                    <span>{{ $classrooms->first()->ageRangeLabel() }}</span>
-                    <span class="hidden sm:inline">Growing up with Marshmallow</span>
-                    <span class="lg:hidden">Swipe to see all six</span>
-                    <span class="hidden lg:inline">School age</span>
-                </p>
+        <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            @foreach ($classrooms as $classroom)
+                @php $color = $classroom->color ?: '#E8177F'; @endphp
+                <li>
+                    <a href="{{ route('classes.show', $classroom) }}"
+                       class="group flex h-full items-start gap-4 rounded-[1.6rem] border-2 border-line-soft bg-white p-4 transition-colors hover:border-transparent sm:p-5"
+                       style="--c: {{ $color }}" onmouseover="this.style.borderColor='{{ $color }}'" onmouseout="this.style.borderColor=''"
+                       data-track="cta_click" data-track-label="Classes – {{ $classroom->name }}">
+                        <span class="grid size-16 shrink-0 place-items-center rounded-[1.1rem]" style="background: color-mix(in srgb, {{ $color }} 12%, #fff);">
+                            <x-site.candy :name="$classroom->icon" :color="$color" class="size-12" :title="$classroom->name" />
+                        </span>
+                        <span class="min-w-0">
+                            <span class="block font-display text-[1.35rem] font-semibold leading-tight" style="color: {{ $color }}">{{ $classroom->name }}</span>
+                            <span class="mt-0.5 block text-sm font-bold text-ink-soft">{{ $classroom->ageRangeLabel() }}</span>
+                            @if ($classroom->tagline)
+                                <span class="mt-2 block text-[0.95rem] leading-snug text-ink-soft">{{ $classroom->tagline }}</span>
+                            @endif
+                        </span>
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+
+        {{-- The finder belongs here: the parent has just met the classes and wants to know which one is theirs. --}}
+        <div class="mt-12 grid gap-8 lg:grid-cols-[1fr_1.15fr] lg:items-center">
+            <div class="hidden justify-center lg:flex">
+                <x-site.mascot class="w-64 xl:w-72" />
+            </div>
+            <div class="mm-bubble px-6 py-7 sm:px-9 sm:py-9">
+                <x-site.class-finder :config="$finderConfig" id="home-finder" place="Homepage class finder"
+                    title="Which class will your child join?"
+                    subtitle="Enter your child’s birthday and we’ll show you their class, what their day looks like, and how to book a visit." />
+                <x-site.bubble-tail side="left" class="hidden lg:block" />
             </div>
         </div>
-    </section>
-@endif
+
+        @if ($section->button_text)
+            <p class="mt-10 text-center">
+                <a href="{{ url($section->button_url ?: route('classes.index')) }}" class="btn btn-outline"
+                   data-track="cta_click" data-track-label="Classes – {{ $section->button_text }}">{{ $section->button_text }}</a>
+            </p>
+        @endif
+    </div>
+</section>

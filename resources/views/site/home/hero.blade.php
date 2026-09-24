@@ -1,86 +1,97 @@
 @php
-    $finderSection = $sections->get('class_finder');
-    $stats = collect([
-        setting('years_experience') ? [setting('years_experience'), 'years of happy mornings in Giza', null, 'text-pink-600'] : null,
-        setting('recommend_percent') ? [setting('recommend_percent').'%', 'of parents recommend us', setting('reviews_count') ? 'from '.setting('reviews_count').' Facebook reviews' : null, 'text-teal-700'] : null,
-        setting('followers') ? [setting('followers'), 'families follow us on Facebook', null, 'text-grape'] : null,
-    ])->filter();
+    $slides = $heroPhotos->map(fn ($photo) => [
+        'src' => $photo->url(),
+        'alt' => $photo->alt ?: 'Children at Marshmallow Nursery',
+        'caption' => $photo->photoable?->title,
+    ])->values();
 @endphp
-<section class="relative overflow-hidden bg-white">
-    <span aria-hidden="true" class="absolute -left-16 top-24 size-40 rounded-full bg-sun/40 sm:size-56"></span>
-    <span aria-hidden="true" class="absolute left-[46%] top-10 hidden size-6 rounded-full bg-teal lg:block"></span>
-    <span aria-hidden="true" class="absolute right-8 top-6 size-4 rounded-full bg-grape sm:right-24"></span>
-    <span aria-hidden="true" class="absolute bottom-10 left-[38%] hidden size-3 rounded-full bg-pink lg:block"></span>
+<section class="relative overflow-hidden bg-ink">
+    <div class="relative" x-data="{
+            i: 0,
+            count: {{ max(1, $slides->count()) }},
+            timer: null,
+            start() {
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || this.count < 2) return;
+                this.timer = setInterval(() => this.i = (this.i + 1) % this.count, 5000);
+            },
+            stop() { clearInterval(this.timer); },
+        }" x-init="start()" @mouseenter="stop()" @mouseleave="start()">
 
-    <div class="relative mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-8 sm:px-8 sm:pt-12 lg:grid-cols-[1fr_1.02fr] lg:items-center lg:gap-14 lg:pb-24 lg:pt-16">
-        <div class="mm-rise">
-            @if (setting('admissions_open') === '1' && setting('admissions_label'))
-                <p class="inline-flex items-center gap-2 rounded-full border-2 border-lime bg-lime-50 px-3.5 py-1 text-sm font-bold">
-                    <span class="size-2 rounded-full bg-lime-700" aria-hidden="true"></span>
-                    {{ setting('admissions_label') }}
-                </p>
-            @endif
+        {{-- Slides --}}
+        <div class="relative h-[62vh] min-h-[26rem] w-full sm:h-[70vh] lg:h-[78vh]">
+            @forelse ($slides as $index => $slide)
+                <img src="{{ $slide['src'] }}" alt="{{ $slide['alt'] }}"
+                     @class(['absolute inset-0 size-full object-cover transition-opacity duration-700'])
+                     x-show="i === {{ $index }}" x-transition:enter="transition-opacity duration-700"
+                     x-transition:enter-start="opacity-0" x-transition:leave="transition-opacity duration-700"
+                     x-transition:leave-end="opacity-0" x-cloak="{{ $index > 0 ? 'true' : 'false' }}"
+                     @if ($index === 0) fetchpriority="high" @else loading="lazy" @endif>
+            @empty
+                <div class="absolute inset-0 bg-gradient-to-br from-pink-600 via-grape to-teal"></div>
+            @endforelse
+            <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/55 to-ink/20"></div>
+        </div>
 
-            <h1 class="mt-5 font-display text-[2.55rem] font-semibold leading-[1.03] sm:text-6xl lg:text-[4.1rem]">
-                {{ $section->title ?: 'Where little ones learn by playing' }}
-            </h1>
+        {{-- Words on top --}}
+        <div class="absolute inset-x-0 bottom-0">
+            <div class="mx-auto max-w-6xl px-5 pb-8 sm:px-8 sm:pb-12 lg:pb-16">
+                @if (setting('admissions_open') === '1' && setting('admissions_label'))
+                    <p class="inline-flex items-center gap-2 rounded-full bg-sun px-3.5 py-1 text-sm font-bold text-ink">
+                        <span class="size-2 rounded-full bg-pink-600" aria-hidden="true"></span>
+                        {{ setting('admissions_label') }}
+                    </p>
+                @endif
 
-            @if ($section->subtitle)
-                <p class="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft sm:text-xl">{{ $section->subtitle }}</p>
-            @endif
-            @if ($section->body)
-                <div class="prose-mm mt-4 text-ink-soft">{!! nl2br(e($section->body)) !!}</div>
-            @endif
+                <h1 class="mt-4 max-w-3xl font-display text-[2.6rem] font-semibold leading-[1.02] text-white sm:text-6xl lg:text-[4.2rem]">
+                    {{ $section->title ?: 'Where little ones learn by playing' }}
+                </h1>
 
-            <div class="mt-7 flex flex-wrap items-center gap-3">
-                <a href="{{ url($section->button_url ?: route('enroll')) }}" class="btn btn-primary px-7 text-lg" data-track="cta_click" data-track-label="Hero – {{ $section->button_text ?: 'Book a visit' }}">
-                    {{ $section->button_text ?: 'Book a visit' }}
-                </a>
-                <a href="#hero-finder-dob" class="btn btn-outline lg:hidden" data-track="cta_click" data-track-label="Hero – Find your child’s class">Find your child’s class</a>
-            </div>
+                @if ($section->subtitle)
+                    <p class="mt-4 max-w-xl text-lg leading-relaxed text-white/85 sm:text-xl">{{ $section->subtitle }}</p>
+                @endif
 
-            @if ($branches->isNotEmpty())
-                <ul class="mt-5 flex flex-wrap gap-x-5 gap-y-2">
+                <div class="mt-7 flex flex-wrap items-center gap-3">
+                    <a href="{{ url($section->button_url ?: route('enroll')) }}" class="btn btn-primary px-7 text-lg"
+                       data-track="cta_click" data-track-label="Hero – {{ $section->button_text ?: 'Book a visit' }}">
+                        {{ $section->button_text ?: 'Book a visit' }}
+                    </a>
                     @foreach ($branches as $branch)
-                        <li>
-                            <a href="{{ $branch->telLink() }}" class="group inline-flex items-center gap-2 font-bold" data-track-label="Call {{ $branch->name }}">
-                                <span class="grid size-8 place-items-center rounded-full bg-blush text-pink-600 group-hover:bg-pink-100"><x-icon name="phone" class="size-4" /></span>
-                                <span><span class="text-ink-soft">{{ $branch->short_name ?: $branch->name }}</span> {{ $branch->phone }}</span>
-                            </a>
-                        </li>
+                        <a href="{{ $branch->telLink() }}" class="inline-flex items-center gap-2 rounded-full border-2 border-white/35 px-4 py-2.5 font-bold text-white hover:bg-white/10"
+                           data-track-label="Call {{ $branch->name }}">
+                            <x-icon name="phone" class="size-4" />
+                            <span class="text-white/70">{{ $branch->short_name ?: $branch->name }}</span> {{ $branch->phone }}
+                        </a>
                     @endforeach
-                </ul>
-            @endif
-
-            @if ($stats->isNotEmpty())
-                <dl class="mt-9 grid max-w-xl grid-cols-3 gap-3 border-t-2 border-line-soft pt-6">
-                    @foreach ($stats as [$value, $label, $note, $color])
-                        <div>
-                            <dt class="sr-only">{{ $label }}</dt>
-                            <dd>
-                                <span class="block font-display text-3xl font-semibold leading-none sm:text-4xl {{ $color }}">{{ $value }}</span>
-                                <span class="mt-1.5 block text-sm font-bold leading-snug">{{ $label }}</span>
-                                @if ($note)
-                                    <span class="block text-xs leading-snug text-ink-muted sm:text-sm">{{ $note }}</span>
-                                @endif
-                            </dd>
-                        </div>
-                    @endforeach
-                </dl>
-            @endif
-        </div>
-
-        <div class="mm-rise mm-rise-delay relative pb-24 sm:pb-28 lg:pb-20" id="class-finder">
-            <div class="mm-bubble p-5 sm:p-7">
-                <x-site.class-finder
-                    :config="$finderConfig"
-                    id="hero-finder"
-                    place="Hero finder"
-                    :title="$finderSection?->title ?: 'Which class will your child join?'"
-                    :subtitle="$finderSection?->subtitle" />
-                <x-site.bubble-tail side="right" />
+                </div>
             </div>
-            <x-site.mascot class="absolute -bottom-2 right-0 w-28 sm:w-32 lg:-right-6 lg:w-36" />
         </div>
+
+        {{-- Dots --}}
+        @if ($slides->count() > 1)
+            <div class="absolute right-5 top-5 flex gap-2 sm:right-8 sm:top-8">
+                @foreach ($slides as $index => $slide)
+                    <button type="button" @click="i = {{ $index }}" :class="i === {{ $index }} ? 'w-7 bg-white' : 'w-2.5 bg-white/50'"
+                            class="h-2.5 rounded-full transition-all hover:bg-white" aria-label="Photo {{ $index + 1 }}"></button>
+                @endforeach
+            </div>
+        @endif
+    </div>
+
+    {{-- The three numbers a parent wants before reading anything --}}
+    <div class="border-t-2 border-white/10">
+        <dl class="mx-auto grid max-w-6xl grid-cols-3 divide-x-2 divide-white/10 px-5 sm:px-8">
+            @foreach ([
+                [setting('years_experience'), 'years in Giza'],
+                [setting('recommend_percent') ? setting('recommend_percent').'%' : null, 'of parents recommend us'],
+                [$branches->count() ?: null, \Illuminate\Support\Str::plural('branch', $branches->count()).' · '.$classrooms->count().' classes'],
+            ] as [$value, $label])
+                @if ($value)
+                    <div class="px-2 py-5 text-center sm:py-7">
+                        <dd class="font-display text-3xl font-semibold text-sun sm:text-5xl">{{ $value }}</dd>
+                        <dt class="mt-1 text-xs font-bold text-white/70 sm:text-sm">{{ $label }}</dt>
+                    </div>
+                @endif
+            @endforeach
+        </dl>
     </div>
 </section>

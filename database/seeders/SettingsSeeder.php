@@ -49,21 +49,23 @@ class SettingsSeeder extends Seeder
             'thank_you_message' => 'Thank you! Our admissions team will call you within one working day to answer your questions and book your visit.',
         ]);
 
+        // The homepage is one journey: happy children → who we are → what we do → the classes →
+        // is it safe → what parents say → the schools we prepare for → the photos → come and visit.
         $sections = [
-            ['hero', 'Hero', 'Where little ones learn by playing', 'An English-language nursery in Hadayek Al Ahram and Sheikh Zayed for children from 6 months to school age. Fourteen years of happy mornings, messy hands and big first steps.', null, 'Book a visit', '/enroll'],
-            ['class_finder', 'Class finder', 'Which class will your child join?', 'Enter your child’s birthday and we’ll show you their class and what their days will look like.', null, null, null],
-            ['why', 'Why Marshmallow', 'What parents notice first', 'The things families tell us made them choose Marshmallow.', null, null, null],
-            ['classes', 'Our classes', 'Six classes, one for every stage', 'Children are grouped by age so every activity fits where they are right now.', null, 'See all classes', '/classes'],
-            ['activities', 'Activities', 'A week full of discovery', 'Academics in English, three languages, gymnastics twice a week, science, art, cooking and a trip every month.', null, 'Explore activities', '/activities'],
-            ['safety', 'Safety & care', 'Safe, clean and well fed', 'Cameras in every class, bathroom and garden, four security doors, a fire alarm system and four fresh meals a day.', null, 'How we keep children safe', '/safety'],
-            ['camps', 'Camps', 'Camps for every school holiday', 'Summer, winter, spring and autumn camps for children aged 4 to 12 — from pottery and tie-dye to robotics and programming.', null, 'View camps', '/camps'],
-            ['testimonials', 'Parents', 'In parents’ words', null, null, null, null],
-            ['partners', 'Partners', 'Ready for the next school', 'We work with international schools across West Cairo to help our graduates move on with confidence.', null, null, null],
-            ['gallery', 'Gallery', 'A peek inside our days', null, null, 'Open the gallery', '/gallery'],
-            ['faq', 'FAQ', 'Questions parents ask us', null, null, null, null],
-            ['branches', 'Branches', 'Visit a branch near you', 'Book a visit and see the classrooms, garden and team for yourself.', null, null, null],
-            ['enroll_cta', 'Enrollment call to action', 'Spaces for 2026–2027 are filling up', 'Tell us a little about your child and our admissions team will call you back within one working day.', null, 'Book a visit', '/enroll'],
+            ['hero', 'Hero (photo slider)', 'Where little ones learn by playing', 'An English-language nursery in Hadayek Al Ahram and Sheikh Zayed, for children from 6 months to school age.', null, 'Book a visit', '/enroll'],
+            ['about', 'Who we are', 'Fourteen years of Marshmallow mornings', 'We opened in 2011 with one idea: children learn best when they are happy. Today two branches in Giza welcome children from 6 months to school age, in six classes grouped by age.', null, 'Meet the classes', '/classes'],
+            ['offer', 'What we do', 'What your child does with us', 'Academics in English, three languages, gymnastics, science, art, music, cooking and a trip every month.', null, null, null],
+            ['classes', 'Our classes', 'Six classes, one for every stage', 'Children are grouped by age, so every activity fits exactly where they are now.', null, 'See every class in detail', '/classes'],
+            ['safety', 'Safety, cleanliness & meals', 'Safe, clean and well fed', 'Cameras in every class, bathroom and garden, four security doors, a fire alarm system, and four fresh meals a day.', null, 'More about safety', '/safety'],
+            ['reviews', 'Parent reviews', 'In parents’ own words', 'Real recommendations written by Marshmallow families on Facebook.', null, null, null],
+            ['partners', 'Partner schools', 'Ready for the next school', 'Our graduates move on to international schools across West Cairo, and we prepare them for it all year.', null, null, null],
+            ['gallery', 'Gallery', 'A peek inside our days', 'Graduations, trips, science days and celebrations — this is what a year at Marshmallow looks like.', null, 'Open the gallery', '/gallery'],
+            ['visit_cta', 'Come and visit', 'Come and see it for yourself', 'Book a visit, meet the team, and see the classrooms while the children are in them.', null, 'Book a visit', '/enroll'],
         ];
+
+        // Sections that used to be on the homepage and now live inside other pages.
+        Section::whereIn('key', ['class_finder', 'why', 'activities', 'camps', 'testimonials', 'faq', 'branches', 'enroll_cta'])
+            ->update(['is_visible' => false]);
 
         foreach ($sections as $i => [$key, $name, $title, $subtitle, $body, $buttonText, $buttonUrl]) {
             Section::updateOrCreate(['key' => $key], [
@@ -80,6 +82,7 @@ class SettingsSeeder extends Seeder
             'safety' => ['Safety & care', 'Safety, meals & transport | Marshmallow Nursery', 'Cameras in every class, bathroom and garden, security doors, fire alarms, four healthy meals a day and safe buses.'],
             'gallery' => ['Gallery', 'Photo gallery | Marshmallow Nursery', 'Graduations, trips, science days and celebrations at Marshmallow.'],
             'about' => ['About', 'About Marshmallow | 14 years of early childhood education', 'Fourteen years of play-based early childhood education in Giza.'],
+            'visit' => ['Visit us', 'Visit Marshmallow Nursery | Hadayek Al Ahram & Sheikh Zayed', 'Our branches, opening hours, safety, meals and transport — and how to book your visit.'],
             'branches' => ['Branches & contact', 'Branches & contact | Marshmallow Nursery Hadayek Al Ahram & Sheikh Zayed', 'Addresses, phone numbers and maps for our Hadayek Al Ahram and Sheikh Zayed branches.'],
             'careers' => ['Careers', 'Careers & internships | Marshmallow Nursery', 'Join our team of teachers, or apply for our internship program for ages 15+.'],
             'enroll' => ['Enroll / Book a visit', 'Book a visit | Marshmallow Nursery', 'Book a visit or ask about enrollment for 2026–2027.'],

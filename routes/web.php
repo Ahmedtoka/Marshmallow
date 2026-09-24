@@ -21,6 +21,8 @@ Route::get('/', [Site\HomeController::class, 'index'])->name('home');
 Route::get('/about', [Site\PageController::class, 'about'])->name('about');
 Route::get('/safety', [Site\PageController::class, 'safety'])->name('safety');
 Route::get('/branches', [Site\PageController::class, 'branches'])->name('branches');
+// One page for "where are you and is my child safe with you", linked from the main menu.
+Route::get('/visit', [Site\PageController::class, 'visit'])->name('visit');
 
 Route::get('/classes', [Site\ClassController::class, 'index'])->name('classes.index');
 Route::post('/classes/find', [Site\ClassController::class, 'find'])->name('classes.find')->middleware('throttle:60,1');

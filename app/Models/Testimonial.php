@@ -10,7 +10,7 @@ class Testimonial extends Model
 {
     protected $guarded = ['id'];
 
-    protected $casts = ['is_visible' => 'boolean', 'is_featured' => 'boolean'];
+    protected $casts = ['is_visible' => 'boolean', 'is_featured' => 'boolean', 'reviewed_at' => 'date'];
 
     public function scopeVisible(Builder $query): Builder
     {

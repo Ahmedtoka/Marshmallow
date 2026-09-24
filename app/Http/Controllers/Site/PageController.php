@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
+use App\Models\Faq;
 use App\Models\Highlight;
 use App\Models\Partner;
 use App\Models\Testimonial;
@@ -43,6 +44,29 @@ class PageController extends Controller
         return view('site.pages.branches', [
             'seoKey' => 'branches',
             'branches' => Branch::active()->get(),
+        ]);
+    }
+
+    /**
+     * Everything a parent needs before walking in: where we are, what keeps their child safe,
+     * what they eat, how they get here, the questions everyone asks, and the booking form.
+     */
+    public function visit(): View
+    {
+        $order = ['safety', 'health', 'meals', 'logistics', 'services'];
+
+        $groups = Highlight::whereIn('group', $order)
+            ->where('is_visible', true)
+            ->orderBy('sort_order')
+            ->get()
+            ->groupBy('group')
+            ->sortBy(fn ($items, $group) => array_search($group, $order, true));
+
+        return view('site.pages.visit', [
+            'seoKey' => 'visit',
+            'branches' => Branch::active()->get(),
+            'groups' => $groups,
+            'faqs' => Faq::visible()->get(),
         ]);
     }
 }

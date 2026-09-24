@@ -15,7 +15,7 @@ class WebsiteTest extends TestCase
 
     public function test_public_pages_load(): void
     {
-        foreach (['/', '/about', '/safety', '/branches', '/classes', '/classes/cupcake', '/activities', '/camps', '/gallery', '/careers', '/enroll', '/sitemap.xml', '/robots.txt'] as $path) {
+        foreach (['/', '/visit', '/about', '/safety', '/branches', '/classes', '/classes/cupcake', '/activities', '/camps', '/gallery', '/careers', '/enroll', '/sitemap.xml', '/robots.txt'] as $path) {
             $this->get($path)->assertOk();
         }
     }

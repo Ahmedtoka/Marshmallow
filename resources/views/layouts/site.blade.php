@@ -13,14 +13,21 @@
 
     $siteBranches = \App\Models\Branch::active()->get();
 
+    // Three places to go and one thing to do — everything else lives inside these pages.
     $nav = [
         ['Classes', route('classes.index'), 'classes.*'],
-        ['Activities', route('activities.index'), 'activities.*'],
-        ['Camps', route('camps.index'), 'camps.*'],
-        ['Safety', route('safety'), 'safety'],
         ['Gallery', route('gallery.index'), 'gallery.*'],
-        ['About', route('about'), 'about'],
-        ['Branches', route('branches'), 'branches'],
+        ['Visit us', route('visit'), 'visit'],
+    ];
+
+    // Secondary pages, kept in the footer so the menu stays short.
+    $footerNav = [
+        ['Activities', route('activities.index')],
+        ['Camps', route('camps.index')],
+        ['Safety & care', route('safety')],
+        ['About us', route('about')],
+        ['Branches', route('branches')],
+        ['Careers', route('careers')],
     ];
 
     $socials = collect([
@@ -239,10 +246,12 @@
                     <nav aria-label="Footer">
                         <p class="font-display text-lg font-semibold text-white">Explore</p>
                         <ul class="mt-3 space-y-2">
-                            @foreach ($nav as [$label, $url])
+                            @foreach ($nav as [$label, $url, $pattern])
                                 <li><a href="{{ $url }}" class="hover:text-white hover:underline">{{ $label }}</a></li>
                             @endforeach
-                            <li><a href="{{ route('careers') }}" class="hover:text-white hover:underline">Careers</a></li>
+                            @foreach ($footerNav as [$label, $url])
+                                <li><a href="{{ $url }}" class="hover:text-white hover:underline">{{ $label }}</a></li>
+                            @endforeach
                             <li><a href="{{ route('enroll') }}" class="hover:text-white hover:underline">Book a visit</a></li>
                         </ul>
                     </nav>

@@ -110,13 +110,17 @@ class ContentSeeder extends Seeder
         GalleryAlbum::doesntHave('photos')->update(['is_visible' => false]);
         GalleryAlbum::has('photos')->update(['is_visible' => true]);
 
-        $testimonials = [
-            ['Hadeer Raafat', 'Marshmallow parent', 'We are so grateful for all the love, care, and support you gave our son throughout his time at your nursery. He truly enjoyed every day, learned so much, and made wonderful memories. Thank you for creating such a happy and caring environment.', true],
-            ['Shreen Mostafa', 'Marshmallow parent', 'Thank you Marshmallow for securing a safe place and a comfort zone for my little girl ❤️', true],
-            ['A Marshmallow mom', 'Parent of a graduate', 'Marshmallow, the best memories ever, thanks for everything… Nehal Fahmy is the best person ever in my daughter’s life. I am grateful for your presence in our lives.', false],
-        ];
-        foreach ($testimonials as $i => [$name, $relation, $quote, $featured]) {
-            Testimonial::updateOrCreate(['parent_name' => $name], ['relation' => $relation, 'quote' => $quote, 'is_featured' => $featured, 'sort_order' => $i]);
+        // Parent reviews now come from the Facebook page (see ReviewSeeder); the three we wrote by
+        // hand are only seeded when there are none at all, so a fresh install is never empty.
+        if (Testimonial::count() === 0) {
+            $testimonials = [
+                ['Hadeer Raafat', 'Marshmallow parent', 'We are so grateful for all the love, care, and support you gave our son throughout his time at your nursery. He truly enjoyed every day, learned so much, and made wonderful memories.', true],
+                ['Shreen Mostafa', 'Marshmallow parent', 'Thank you Marshmallow for securing a safe place and a comfort zone for my little girl ❤️', true],
+            ];
+
+            foreach ($testimonials as $i => [$name, $relation, $quote, $featured]) {
+                Testimonial::updateOrCreate(['parent_name' => $name], ['relation' => $relation, 'quote' => $quote, 'is_featured' => $featured, 'sort_order' => $i]);
+            }
         }
 
         $schools = ['Majesty International Schools', 'Knowledge Valley International School (KVS)', 'Kipling School', 'Emerald International School (EIS)', 'SKILLS – Suad Kafafi International Language School', 'Core West College', 'Stanford Egypt Schools West Cairo', 'Winchester British International School', 'Marvel International School (MIS)', 'Notion International School (NIS)'];

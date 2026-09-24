@@ -3,14 +3,14 @@
 @section('content')
     @php $tinted = false; @endphp
     @foreach ($sections as $key => $section)
-        {{-- One finder per page: when the hero is visible it carries the finder. --}}
-        @continue($key === 'class_finder' && $sections->has('hero'))
         @continue(! view()->exists('site.home.'.$key))
         <div data-track-section="{{ $key }}">
             @include('site.home.'.$key, ['section' => $section, 'tint' => $tinted])
         </div>
         @php
-            if (! in_array($key, ['hero', 'enroll_cta'], true)) {
+            // The hero and the closing call to action bring their own background, so they do not
+            // take part in the white / blush alternation.
+            if (! in_array($key, ['hero', 'visit_cta'], true)) {
                 $tinted = ! $tinted;
             }
         @endphp
