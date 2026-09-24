@@ -45,7 +45,8 @@ return [
         'public_media' => [
             'driver' => 'local',
             'root' => public_path('media'),
-            'url' => env('APP_URL').'/media',
+            // Relative on purpose: photo URLs then work on any domain, even if APP_URL is wrong.
+            'url' => '/media',
             'visibility' => 'public',
             'throw' => false,
         ],
