@@ -211,7 +211,9 @@ Alpine.data('heroMosaic', (photos, count) => ({
         this.swapping = Array(count).fill(false);
         this.cursor = count;
 
-        if (photos.length <= count || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        // Needs a few spare photos to rotate through, and nothing moves for anyone who asked
+        // for reduced motion.
+        if (photos.length < count + 3 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
         this.start();
         document.addEventListener('visibilitychange', () => (document.hidden ? this.stop() : this.start()));
@@ -231,11 +233,19 @@ Alpine.data('heroMosaic', (photos, count) => ({
         const tile = Math.floor(Math.random() * this.count);
         if (this.swapping[tile]) return;
 
-        const photo = this.photos[this.cursor % this.photos.length];
-        this.cursor += 1;
+        // Walk the pool until we find a photo that is not already on the wall, so the wall keeps
+        // moving instead of stalling once most photos are on screen.
+        let photo = null;
+        for (let i = 0; i < this.photos.length; i += 1) {
+            const candidate = this.photos[(this.cursor + i) % this.photos.length];
+            if (!this.current.includes(candidate)) {
+                photo = candidate;
+                this.cursor = (this.cursor + i + 1) % this.photos.length;
+                break;
+            }
+        }
 
-        // Never show the same photo twice on the wall at the same moment.
-        if (this.current.includes(photo)) return;
+        if (!photo) return;
 
         this.next[tile] = photo;
         this.swapping[tile] = true;

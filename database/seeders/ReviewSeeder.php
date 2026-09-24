@@ -14,6 +14,14 @@ class ReviewSeeder extends Seeder
 {
     public function run(): void
     {
+        // A review we typed by hand before the Facebook import would otherwise appear twice.
+        $names = collect(self::REVIEWS)->where('source', 'facebook')->pluck('parent_name')
+            ->map(fn ($name) => mb_strtolower(trim($name)));
+
+        Testimonial::where('source', '!=', 'facebook')->get()
+            ->filter(fn ($t) => $names->contains(mb_strtolower(trim($t->parent_name))))
+            ->each->delete();
+
         foreach (self::REVIEWS as $review) {
             $key = $review['source_url']
                 ? ['source_url' => $review['source_url']]

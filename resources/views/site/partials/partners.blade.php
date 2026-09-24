@@ -5,10 +5,10 @@
         $partner->on_dark ? 'border-ink bg-ink hover:border-pink' : 'border-line-soft bg-white hover:border-pink-200',
     ]);
 @endphp
-<ul class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
+<ul class="-mx-5 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-3 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-5">
     @foreach ($partners as $partner)
         @php $logo = media_url($partner->logo); @endphp
-        <li>
+        <li class="w-[45%] shrink-0 snap-start sm:w-auto">
             @if ($partner->website)
                 <a href="{{ $partner->website }}" target="_blank" rel="noopener" class="{{ $tile($partner) }}" data-track-label="Partner school – {{ $partner->name }}">
             @else

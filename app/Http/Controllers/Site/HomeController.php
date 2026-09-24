@@ -65,7 +65,7 @@ class HomeController extends Controller
             ->orderBy('sort_order')
             ->get()
             ->groupBy('photoable_id')
-            ->flatMap(fn ($photos) => $photos->take(3));
+            ->flatMap(fn ($photos) => $photos->take(6));
 
         // Skip the activities we do not feature (their photos are the nursery's designed booklets
         // and posters rather than moments).
@@ -76,18 +76,17 @@ class HomeController extends Controller
 
         $fromClasses = Photo::where('photoable_type', 'classroom_activity')
             ->whereIn('photoable_id', $featured)
-            ->whereColumn('width', '>', 'height')
             ->orderBy('sort_order')
             ->get()
             ->groupBy('photoable_id')
-            ->flatMap(fn ($photos) => $photos->take(1));
+            ->flatMap(fn ($photos) => $photos->take(2));
 
         // Interleave the two sources so the wall mixes events with everyday classroom moments.
         return $fromAlbums->values()->zip($fromClasses->values())
             ->flatten()
             ->filter()
             ->unique('id')
-            ->take(40)
+            ->take(60)
             ->values();
     }
 

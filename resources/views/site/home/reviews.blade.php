@@ -32,13 +32,13 @@
         </div>
 
         @if ($reviews->isNotEmpty())
-            <ul class="mt-10 gap-4 space-y-4 sm:columns-2 lg:columns-3">
+            <ul class="-mx-5 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 sm:mx-0 sm:block sm:columns-2 sm:gap-4 sm:space-y-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:columns-3">
                 @foreach ($reviews as $review)
                     @php
                         $initial = mb_strtoupper(mb_substr(trim($review->parent_name), 0, 1));
                         $color = $palette[crc32($review->parent_name) % count($palette)];
                     @endphp
-                    <li class="break-inside-avoid rounded-[1.4rem] border-2 border-line-soft bg-white p-5">
+                    <li class="w-[85%] shrink-0 snap-start break-inside-avoid rounded-[1.4rem] border-2 border-line-soft bg-white p-5 sm:w-auto">
                         <div class="flex items-start gap-3">
                             @if ($review->photo)
                                 <img src="{{ thumb_url($review->photo, 160) }}" alt="" loading="lazy" class="size-11 shrink-0 rounded-full object-cover">

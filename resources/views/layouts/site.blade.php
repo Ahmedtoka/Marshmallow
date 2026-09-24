@@ -23,12 +23,10 @@
 
     // Secondary pages, kept in the footer so the menu stays short.
     $footerNav = [
-        ['Activities', route('activities.index')],
         ['Camps', route('camps.index')],
-        ['Safety & care', route('safety')],
         ['About us', route('about')],
-        ['Branches', route('branches')],
         ['Careers', route('careers')],
+        ['Book a visit', route('enroll')],
     ];
 
     $socials = collect([
@@ -244,7 +242,8 @@
                     @endif
                 </div>
 
-                {{-- Where to go --}}
+                {{-- Where to go, and when we are open — side by side on a phone --}}
+                <div class="grid grid-cols-2 gap-8 sm:col-span-2 sm:grid-cols-2 lg:col-span-2 lg:gap-12">
                 <nav aria-label="Footer">
                     <p class="font-display text-lg font-semibold text-white">Explore</p>
                     <ul class="mt-3 space-y-2">
@@ -254,11 +253,9 @@
                         @foreach ($footerNav as [$label, $url])
                             <li><a href="{{ $url }}" class="hover:text-white hover:underline">{{ $label }}</a></li>
                         @endforeach
-                        <li><a href="{{ route('enroll') }}" class="hover:text-white hover:underline">Book a visit</a></li>
                     </ul>
                 </nav>
 
-                {{-- When we are open, and how to reach us. The branch details live on the page above. --}}
                 <div>
                     <p class="font-display text-lg font-semibold text-white">Opening hours</p>
                     <dl class="mt-3 space-y-2.5 text-[0.95rem]">
@@ -273,24 +270,25 @@
                         @endif
                     </dl>
 
-                    <ul class="mt-6 space-y-2 text-[0.95rem]">
+                    <ul class="mt-6 space-y-2.5 text-[0.95rem]">
                         @foreach ($siteBranches as $branch)
                             <li>
-                                <a href="{{ $branch->telLink() }}" class="inline-flex items-center gap-2 hover:text-white" data-track-label="Call {{ $branch->name }}">
-                                    <x-icon name="phone" class="size-4 text-pink" />
-                                    <span class="text-white/70">{{ $branch->short_name ?: $branch->name }}</span>
+                                <a href="{{ $branch->telLink() }}" class="flex flex-wrap items-center gap-x-2 gap-y-0.5 hover:text-white" data-track-label="Call {{ $branch->name }}">
+                                    <span class="flex items-center gap-2 text-white/70"><x-icon name="phone" class="size-4 text-pink" /> {{ $branch->short_name ?: $branch->name }}</span>
                                     <span class="font-bold text-white">{{ $branch->phone }}</span>
                                 </a>
                             </li>
                         @endforeach
                         @if (setting('email'))
                             <li>
-                                <a href="mailto:{{ setting('email') }}" class="inline-flex items-center gap-2 hover:text-white">
-                                    <x-icon name="mail" class="size-4 text-pink" /> {{ setting('email') }}
+                                <a href="mailto:{{ setting('email') }}" class="flex items-start gap-2 hover:text-white">
+                                    <x-icon name="mail" class="mt-0.5 size-4 shrink-0 text-pink" />
+                                    <span class="break-all">{{ setting('email') }}</span>
                                 </a>
                             </li>
                         @endif
                     </ul>
+                </div>
                 </div>
             </div>
 

@@ -2,10 +2,10 @@
     <div class="mx-auto max-w-6xl px-5 sm:px-8">
         <x-site.section-head :title="$section->title" :subtitle="$section->subtitle" align="center" />
 
-        <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul class="-mx-5 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
             @foreach ($trust as $item)
                 @php $color = $item->color ?: '#E8177F'; @endphp
-                <li class="flex h-full gap-4 rounded-[1.5rem] bg-white p-5 shadow-[0_0_0_2px_var(--tw-shadow-color)] shadow-line-soft">
+                <li class="flex h-full w-[82%] shrink-0 snap-start gap-4 sm:w-auto rounded-[1.5rem] bg-white p-5 shadow-[0_0_0_2px_var(--tw-shadow-color)] shadow-line-soft">
                     <span class="grid size-11 shrink-0 place-items-center rounded-xl" style="background: color-mix(in srgb, {{ $color }} 14%, #fff); color: {{ $color }};">
                         <x-icon :name="$item->icon" class="size-5" />
                     </span>

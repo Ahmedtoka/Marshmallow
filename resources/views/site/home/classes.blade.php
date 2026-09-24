@@ -2,10 +2,10 @@
     <div class="mx-auto max-w-6xl px-5 sm:px-8">
         <x-site.section-head :title="$section->title" :subtitle="$section->subtitle" align="center" />
 
-        <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul class="-mx-5 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
             @foreach ($classrooms as $classroom)
                 @php $color = $classroom->color ?: '#E8177F'; @endphp
-                <li>
+                <li class="w-[82%] shrink-0 snap-start sm:w-auto">
                     <a href="{{ route('classes.show', $classroom) }}"
                        class="group flex h-full items-start gap-4 rounded-[1.6rem] border-2 border-line-soft bg-white p-4 transition-colors hover:border-transparent sm:p-5"
                        style="--c: {{ $color }}" onmouseover="this.style.borderColor='{{ $color }}'" onmouseout="this.style.borderColor=''"
