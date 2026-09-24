@@ -539,7 +539,10 @@ class PhotoSeeder extends Seeder
             }
         }
 
-        GalleryAlbum::doesntHave('photos')->update(['is_visible' => false]);
-        GalleryAlbum::has('photos')->update(['is_visible' => true]);
+        // An album needs a handful of photos before it earns a card in the gallery, and the parent
+        // review cards live on the reviews page instead.
+        foreach (GalleryAlbum::withCount('photos')->get() as $album) {
+            $album->update(['is_visible' => $album->photos_count >= 4 && $album->category !== 'reviews']);
+        }
     }
 }

@@ -36,11 +36,16 @@ class ClassroomSeeder extends Seeder
             'events' => ['Events & celebrations', 'outings', 'balloon', '#8479BD', 'Science Day, Career Day, Sports Day, Ramadan, Eid, Mother’s Day, Halloween, graduation and more.'],
         ];
 
+        // These two are taught in the classes, but their photos are the nursery's printed booklets
+        // and a poster, so they stay off the homepage grid.
+        $notFeatured = ['topic-booklet', 'zumba-pe'];
+
         $sort = 0;
         foreach ($activities as $slug => [$name, $category, $icon, $color, $summary]) {
             Activity::updateOrCreate(['slug' => $slug], [
                 'name' => $name, 'category' => $category, 'icon' => $icon, 'color' => $color,
-                'summary' => $summary, 'description' => $summary, 'sort_order' => $sort++, 'is_active' => true,
+                'summary' => $summary, 'description' => $summary, 'sort_order' => $sort++,
+                'is_active' => true, 'is_featured' => ! in_array($slug, $notFeatured, true),
             ]);
         }
 
