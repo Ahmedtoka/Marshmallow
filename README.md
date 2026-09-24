@@ -85,7 +85,11 @@ The website tracks visits first-party (no third-party service needed): source (F
 2. **Point the webroot** to `public_html/public` (Application Settings → Webroot).
 3. **Deploy code** via Deployment via Git (connect the GitHub repo and pull the branch).
    `public/build` is committed, so Node is not needed on the server. Run `npm run build` locally and commit before pushing whenever you change styles or scripts.
-4. **Environment:** over SSH in the app folder:
+4. **Domain & SSL:** point the domain at the server in Cloudways (Domain Management), make
+   `marshmallowchilddevelopmentcenter.com` the primary domain with `www` as an alias, then issue the
+   Let's Encrypt certificate for **both** names and turn on Force HTTPS. The app builds every link
+   from `APP_URL`, so set that to the https address.
+5. **Environment:** over SSH in the app folder:
    ```bash
    cp .env.example .env         # fill in APP_URL, DB_* from Cloudways Access Details, MAIL_* for email alerts
    composer install --no-dev --optimize-autoloader
@@ -94,11 +98,10 @@ The website tracks visits first-party (no third-party service needed): source (F
    php artisan storage:link
    php artisan config:cache && php artisan route:cache && php artisan view:cache
    ```
-5. **Cron job** (Cloudways → Cron Job Management), for follow-up reminders:
+6. **Cron job** (Cloudways → Cron Job Management), for follow-up reminders:
    ```
    * * * * * cd /home/master/applications/APP_ID/public_html && php artisan schedule:run >> /dev/null 2>&1
    ```
-6. **SSL:** enable Let's Encrypt on the domain.
 7. **After each later deploy** (pull from Git, then over SSH in the app folder):
    ```bash
    bash deploy.sh
