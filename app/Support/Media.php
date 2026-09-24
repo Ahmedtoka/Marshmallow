@@ -55,6 +55,51 @@ class Media
         return Storage::disk(self::disk())->url($path);
     }
 
+    /**
+     * URL of a smaller copy of an uploaded photo, generated the first time it is asked for.
+     * A wall of twenty photos would otherwise cost a parent on mobile data several megabytes.
+     */
+    public static function thumb(?string $path, int $width = 600): ?string
+    {
+        if (! $path || Str::startsWith($path, ['http://', 'https://', '/'])) {
+            return self::url($path);
+        }
+
+        $disk = Storage::disk(self::disk());
+        $thumb = 'thumbs/'.$width.'/'.$path;
+
+        if ($disk->exists($thumb)) {
+            return $disk->url($thumb);
+        }
+
+        if (! $disk->exists($path) || ! function_exists('imagecreatefromstring')) {
+            return self::url($path);
+        }
+
+        $image = @imagecreatefromstring($disk->get($path));
+
+        if (! $image) {
+            return self::url($path);
+        }
+
+        $height = (int) round(imagesy($image) * ($width / imagesx($image)));
+
+        if (imagesx($image) <= $width) {
+            $disk->put($thumb, $disk->get($path), 'public');
+
+            return $disk->url($thumb);
+        }
+
+        $canvas = imagecreatetruecolor($width, $height);
+        imagecopyresampled($canvas, $image, 0, 0, 0, 0, $width, $height, imagesx($image), imagesy($image));
+
+        ob_start();
+        imagejpeg($canvas, null, 78);
+        $disk->put($thumb, (string) ob_get_clean(), 'public');
+
+        return $disk->url($thumb);
+    }
+
     public static function delete(?string $path): void
     {
         if ($path && ! Str::startsWith($path, ['http://', 'https://', '/'])) {

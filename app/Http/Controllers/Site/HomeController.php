@@ -50,17 +50,44 @@ class HomeController extends Controller
         ]);
     }
 
-    /** Wide photos from different albums, so the slider never shows the same day twice. */
+    /**
+     * Photos for the hero wall: a spread across albums and classes so the mosaic shows the whole
+     * nursery at once, not one afternoon. Two per album keeps it varied, and the tiles are small,
+     * so each photo is served as a light thumbnail.
+     */
     private function heroPhotos(): Collection
     {
-        return Photo::where('photoable_type', 'album')
-            ->whereIn('photoable_id', GalleryAlbum::where('is_visible', true)->pluck('id'))
-            ->whereColumn('width', '>=', 'height')
-            ->with('photoable:id,title,slug')
-            ->orderByDesc('width')
+        $albums = GalleryAlbum::where('is_visible', true)->pluck('id');
+
+        $fromAlbums = Photo::where('photoable_type', 'album')
+            ->whereIn('photoable_id', $albums)
+            ->whereColumn('width', '>', 'height')
+            ->orderBy('sort_order')
             ->get()
-            ->unique('photoable_id')
-            ->take(6)
+            ->groupBy('photoable_id')
+            ->flatMap(fn ($photos) => $photos->take(3));
+
+        // Skip the activities we do not feature (their photos are the nursery's designed booklets
+        // and posters rather than moments).
+        $featured = \Illuminate\Support\Facades\DB::table('classroom_activity')
+            ->join('activities', 'activities.id', '=', 'classroom_activity.activity_id')
+            ->where('activities.is_featured', true)
+            ->pluck('classroom_activity.id');
+
+        $fromClasses = Photo::where('photoable_type', 'classroom_activity')
+            ->whereIn('photoable_id', $featured)
+            ->whereColumn('width', '>', 'height')
+            ->orderBy('sort_order')
+            ->get()
+            ->groupBy('photoable_id')
+            ->flatMap(fn ($photos) => $photos->take(1));
+
+        // Interleave the two sources so the wall mixes events with everyday classroom moments.
+        return $fromAlbums->values()->zip($fromClasses->values())
+            ->flatten()
+            ->filter()
+            ->unique('id')
+            ->take(40)
             ->values();
     }
 

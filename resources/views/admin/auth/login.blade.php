@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="robots" content="noindex, nofollow">
     <title>Sign in · Marshmallow Dashboard</title>
-    <link rel="icon" href="{{ asset('images/logo.jpg') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-192.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
 <body class="min-h-screen grid place-items-center px-4 py-10">
     <main class="w-full max-w-sm">
         <div class="text-center mb-6">
-            <img src="{{ asset('images/logo.jpg') }}" alt="Marshmallow Child Development Center" class="mx-auto w-44 rounded-3xl">
+            <img src="{{ asset('images/logo.png') }}" alt="Marshmallow Child Development Center" class="mx-auto w-44 rounded-3xl">
         </div>
         <div class="card p-6 sm:p-7">
             <h1 class="font-display text-2xl">Sign in to the dashboard</h1>

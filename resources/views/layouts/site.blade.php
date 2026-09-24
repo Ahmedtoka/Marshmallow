@@ -3,7 +3,7 @@
     $siteName = setting('site_name', 'Marshmallow Child Development Center');
     $pageTitle = trim($__env->yieldContent('title')) ?: ($seo?->title ?: $siteName);
     $pageDescription = trim($__env->yieldContent('description')) ?: ($seo?->description ?: setting('footer_about'));
-    $logoUrl = media_url(setting('logo_path')) ?: asset('images/logo.jpg');
+    $logoUrl = media_url(setting('logo_path')) ?: asset('images/logo.png');
     $headerLogoUrl = media_url(setting('logo_path')) ?: asset('images/logo-header.png');
     $pageImage = trim($__env->yieldContent('og_image')) ?: (media_url($seo?->og_image) ?: (media_url(setting('default_og_image')) ?: $logoUrl));
     if (! \Illuminate\Support\Str::startsWith($pageImage, ['http://', 'https://'])) {
@@ -96,8 +96,8 @@
     <meta name="twitter:description" content="{{ \Illuminate\Support\Str::limit(strip_tags($pageDescription), 200) }}">
     <meta name="twitter:image" content="{{ $pageImage }}">
 
-    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/logo.jpg') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-192.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo-512.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

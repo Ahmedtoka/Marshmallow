@@ -19,6 +19,14 @@ if (! function_exists('media_url')) {
     }
 }
 
+if (! function_exists('thumb_url')) {
+    /** Smaller copy of an uploaded photo, made on first use. */
+    function thumb_url(?string $path, int $width = 600): ?string
+    {
+        return Media::thumb($path, $width);
+    }
+}
+
 if (! function_exists('tel_link')) {
     function tel_link(?string $phone): string
     {

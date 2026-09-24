@@ -189,5 +189,63 @@ Alpine.data('enrollForm', (initial = {}) => ({
     },
 }));
 
+
+/* ------------------------------------------------------------------
+ * Hero photo wall. Every few seconds one tile changes: the odd tiles
+ * slide the new photo up, the even ones fade it in, so the wall is alive
+ * without anything moving all at once. Paused when the tab is hidden and
+ * for anyone who asked for reduced motion.
+ * ------------------------------------------------------------------ */
+Alpine.data('heroMosaic', (photos, count) => ({
+    photos,
+    count,
+    current: [],
+    next: [],
+    swapping: [],
+    cursor: 0,
+    timer: null,
+
+    init() {
+        this.current = Array.from({ length: count }, (_, i) => photos[i % photos.length]);
+        this.next = [...this.current];
+        this.swapping = Array(count).fill(false);
+        this.cursor = count;
+
+        if (photos.length <= count || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        this.start();
+        document.addEventListener('visibilitychange', () => (document.hidden ? this.stop() : this.start()));
+    },
+
+    start() {
+        this.stop();
+        this.timer = setInterval(() => this.swap(), 2600);
+    },
+
+    stop() {
+        clearInterval(this.timer);
+        this.timer = null;
+    },
+
+    swap() {
+        const tile = Math.floor(Math.random() * this.count);
+        if (this.swapping[tile]) return;
+
+        const photo = this.photos[this.cursor % this.photos.length];
+        this.cursor += 1;
+
+        // Never show the same photo twice on the wall at the same moment.
+        if (this.current.includes(photo)) return;
+
+        this.next[tile] = photo;
+        this.swapping[tile] = true;
+
+        setTimeout(() => {
+            this.current[tile] = photo;
+            this.swapping[tile] = false;
+        }, 700);
+    },
+}));
+
 window.Alpine = Alpine;
 Alpine.start();

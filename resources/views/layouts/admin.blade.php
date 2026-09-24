@@ -46,7 +46,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="robots" content="noindex, nofollow">
     <title>@hasSection('title')@yield('title') · @endif Marshmallow Dashboard</title>
-    <link rel="icon" href="{{ asset('images/logo.jpg') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-192.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -60,7 +60,7 @@
     <aside :class="nav ? 'translate-x-0' : '-translate-x-full'"
            class="fixed inset-y-0 left-0 z-40 w-64 bg-ink text-white flex flex-col transition-transform lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen">
         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-5 h-16 shrink-0">
-            <img src="{{ asset('images/logo.jpg') }}" alt="" class="size-10 rounded-xl bg-white object-cover">
+            <img src="{{ asset('images/logo.png') }}" alt="" class="h-10 w-auto max-w-[3.25rem] object-contain">
             <span class="leading-tight">
                 <span class="block font-display text-[17px]">Marshmallow</span>
                 <span class="block text-[11px] text-white/55 font-semibold">Dashboard</span>
