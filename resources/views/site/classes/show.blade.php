@@ -63,94 +63,83 @@
         </div>
     </section>
 
-    {{-- What the class learns --}}
+    {{-- What the class learns: the name, its icon and how often it happens --}}
     @if ($items->isNotEmpty())
         <section class="bg-white py-14 sm:py-20" data-track-section="class_activities">
             <div class="mx-auto max-w-6xl px-5 sm:px-8">
-                <x-site.section-head :title="'What '.$classroom->name.' learns'" subtitle="The activities in this class, how often they happen and what they look like at this age." />
-                <div class="mt-10 grid gap-5 md:grid-cols-2">
-                    @foreach ($items as $item)
-                        @php
-                            $activity = $item->activity;
-                            $photos = $item->photos->isNotEmpty() ? $item->photos : $activity->photos;
-                            $ac = $activity->color ?: $c;
-                            $count = $photos->count();
-                        @endphp
-                        <article class="flex flex-col overflow-hidden rounded-[1.75rem] border-2 border-line bg-white" x-data="lightbox(@js($classroom->name.' – '.$activity->name))">
-                            @if ($count === 0)
-                                <x-site.photo :color="$ac" :icon="$activity->icon" ratio="3/1" rounded="rounded-none" :alt="$activity->name" />
-                            @elseif ($count === 1)
-                                @php $p = $photos->first(); @endphp
-                                <button type="button" @click="show(0)" data-lightbox-item data-src="{{ $p->url() }}" data-alt="{{ $p->alt ?: $activity->name }}" data-caption="{{ $p->caption }}" class="block">
-                                    <x-site.photo :src="$p->url()" :alt="$p->alt ?: $activity->name" ratio="16/10" rounded="rounded-none" />
-                                    <span class="sr-only">Open photo</span>
-                                </button>
-                            @elseif ($count === 2)
-                                <div class="grid grid-cols-2 gap-1">
-                                    @foreach ($photos as $i => $p)
-                                        <button type="button" @click="show({{ $i }})" data-lightbox-item data-src="{{ $p->url() }}" data-alt="{{ $p->alt ?: $activity->name }}" data-caption="{{ $p->caption }}" class="block">
-                                            <x-site.photo :src="$p->url()" :alt="$p->alt ?: $activity->name" ratio="4/5" rounded="rounded-none" />
-                                            <span class="sr-only">Open photo {{ $i + 1 }}</span>
-                                        </button>
-                                    @endforeach
-                                </div>
-                            @else
-                                <div class="grid grid-cols-3 grid-rows-2 gap-1" style="aspect-ratio: 16/10;">
-                                    @foreach ($photos as $i => $p)
-                                        <button type="button" @click="show({{ $i }})" data-lightbox-item data-src="{{ $p->url() }}" data-alt="{{ $p->alt ?: $activity->name }}" data-caption="{{ $p->caption }}"
-                                            @class(['relative block overflow-hidden', 'col-span-2 row-span-2' => $i === 0, 'hidden' => $i > 2])>
-                                            <img src="{{ $p->url() }}" alt="{{ $p->alt ?: $activity->name }}" loading="lazy" class="absolute inset-0 size-full object-cover">
-                                            @if ($i === 2 && $count > 3)
-                                                <span class="absolute inset-0 grid place-items-center bg-ink/55 font-display text-xl font-semibold text-white">+{{ $count - 3 }}</span>
-                                            @endif
-                                            <span class="sr-only">Open photo {{ $i + 1 }}</span>
-                                        </button>
-                                    @endforeach
-                                </div>
-                            @endif
+                <x-site.section-head :title="'What '.$classroom->name.' learns'"
+                    subtitle="Everything in this class’s week, and how often it happens." />
 
-                            <div class="flex flex-1 flex-col p-5 sm:p-6">
-                                <div class="flex items-start gap-3">
-                                    <span class="grid size-11 shrink-0 place-items-center rounded-2xl" style="background: color-mix(in srgb, {{ $ac }} 14%, #fff); color: {{ $ac }};">
-                                        <x-icon :name="$activity->icon" class="size-5" />
-                                    </span>
-                                    <div class="min-w-0 flex-1">
-                                        <h3 class="font-display text-xl font-semibold leading-tight">
-                                            <a href="{{ route('activities.show', $activity) }}" class="hover:underline">{{ $activity->name }}</a>
-                                        </h3>
-                                        @if ($item->frequency)
-                                            <p class="mt-1 inline-flex items-center gap-1.5 text-sm font-bold" style="color: {{ $deep }};"><x-icon name="calendar" class="size-3.5" /> {{ $item->frequency }}</p>
-                                        @endif
-                                    </div>
-                                </div>
-                                <p class="mt-3 leading-relaxed text-ink-soft">{{ $item->details ?: $activity->summary }}</p>
-                            </div>
-                            @if ($count > 0)
-                                @include('site.partials.lightbox-dialog')
-                            @endif
-                        </article>
+                <ul class="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($items as $item)
+                        @php $activity = $item->activity; $ac = $activity->color ?: $c; @endphp
+                        <li>
+                            <a href="{{ route('activities.show', $activity) }}"
+                               class="flex h-full items-center gap-3.5 rounded-[1.35rem] border-2 border-line-soft bg-white p-4 transition-colors hover:border-current"
+                               style="color: {{ $ac }}"
+                               data-track="cta_click" data-track-label="{{ $classroom->name }} – {{ $activity->name }}">
+                                <span class="grid size-12 shrink-0 place-items-center rounded-2xl" style="background: color-mix(in srgb, {{ $ac }} 14%, #fff);">
+                                    <x-icon :name="$activity->icon" class="size-6" />
+                                </span>
+                                <span class="min-w-0 text-ink">
+                                    <span class="block font-display text-[1.08rem] font-medium leading-snug">{{ $activity->name }}</span>
+                                    @if ($item->frequency)
+                                        <span class="mt-0.5 flex items-center gap-1.5 text-sm font-bold text-ink-soft">
+                                            <x-icon name="clock" class="size-3.5" /> {{ $item->frequency }}
+                                        </span>
+                                    @endif
+                                </span>
+                            </a>
+                        </li>
                     @endforeach
-                </div>
+                </ul>
             </div>
         </section>
     @endif
 
-    {{-- Class photos --}}
-    <section class="bg-blush py-14 sm:py-20" data-track-section="class_photos">
-        <div class="mx-auto max-w-6xl px-5 sm:px-8">
-            <x-site.section-head :title="'Inside '.$classroom->name" />
-            <div class="mt-8">
-                @include('site.partials.photo-grid', [
-                    'photos' => $classroom->photos,
-                    'title' => $classroom->name.' class photos',
-                    'color' => $c,
-                    'icon' => 'blocks',
-                    'emptyTitle' => 'Class photos are coming soon',
-                    'emptyText' => 'We’re picking our favourite moments from '.$classroom->name.'. Book a visit to see the classroom in person.',
-                ])
+    {{-- One slider with every photo of this class, whatever the activity --}}
+    @if ($gallery->isNotEmpty())
+        <section class="bg-blush py-14 sm:py-20" data-track-section="class_photos"
+                 x-data="lightbox(@js($classroom->name.' class'))" @keydown.window="keydown($event)">
+            <div class="mx-auto max-w-6xl px-5 sm:px-8">
+                <div class="flex flex-wrap items-end justify-between gap-4">
+                    <x-site.section-head :title="$classroom->name.' in photos'"
+                        :subtitle="'A real week in '.$classroom->name.' — tap any photo to see it big.'" />
+
+                    <div class="hidden gap-2 sm:flex">
+                        <button type="button" @click="$refs.track.scrollBy({ left: -$refs.track.clientWidth * 0.8, behavior: 'smooth' })"
+                                class="grid size-11 place-items-center rounded-full border-2 border-ink/15 bg-white text-ink hover:border-pink-300" aria-label="Previous photos">
+                            <x-icon name="arrow-left" class="size-5" />
+                        </button>
+                        <button type="button" @click="$refs.track.scrollBy({ left: $refs.track.clientWidth * 0.8, behavior: 'smooth' })"
+                                class="grid size-11 place-items-center rounded-full border-2 border-ink/15 bg-white text-ink hover:border-pink-300" aria-label="More photos">
+                            <x-icon name="arrow-right" class="size-5" />
+                        </button>
+                    </div>
+                </div>
+
+                <div x-ref="track" class="-mx-5 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 sm:mx-0 sm:px-0">
+                    @foreach ($gallery as $i => $item)
+                        <button type="button" @click="show({{ $i }})"
+                                data-lightbox-item data-src="{{ $item->photo->url() }}"
+                                data-alt="{{ $item->photo->alt ?: $item->label }}" data-caption="{{ $item->photo->caption ?: $item->label }}"
+                                class="group w-[78%] shrink-0 snap-center text-left sm:w-[46%] lg:w-[31.5%]">
+                            <img src="{{ $item->photo->url() }}" alt="{{ $item->photo->alt ?: $item->label }}" loading="lazy"
+                                 class="aspect-[4/3] w-full rounded-[1.5rem] object-cover transition-transform duration-300 group-hover:-translate-y-1">
+                            <span class="mt-2.5 flex items-center gap-2 px-0.5 font-bold">
+                                <span class="size-2.5 shrink-0 rounded-full" style="background: {{ $c }}"></span>
+                                {{ $item->label }}
+                            </span>
+                        </button>
+                    @endforeach
+                </div>
+
+                <p class="mt-2 text-sm text-ink-soft sm:hidden">Swipe to see more →</p>
             </div>
-        </div>
-    </section>
+
+            @include('site.partials.lightbox-dialog')
+        </section>
+    @endif
 
     {{-- Prev / next --}}
     @if ($prev || $next)

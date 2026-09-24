@@ -78,6 +78,24 @@ class ClassController extends Controller
             ->filter(fn ($item) => $item->activity && $item->activity->is_active)
             ->values();
 
+        // One gallery for the class: the photos of each activity plus any photo of the room itself.
+        // Taken round-robin so the slider alternates between activities instead of showing six
+        // gymnastics photos in a row.
+        $byActivity = $items
+            ->map(fn ($item) => $item->photos->map(fn ($photo) => (object) ['photo' => $photo, 'label' => $item->activity->name]))
+            ->push($classroom->photos->map(fn ($photo) => (object) ['photo' => $photo, 'label' => $classroom->name]))
+            ->filter->isNotEmpty()
+            ->values();
+
+        $gallery = collect();
+        for ($round = 0; $round < $byActivity->max(fn ($group) => $group->count()); $round++) {
+            foreach ($byActivity as $group) {
+                if ($group->has($round)) {
+                    $gallery->push($group[$round]);
+                }
+            }
+        }
+
         $all = Classroom::active()->get();
         $index = $all->search(fn ($c) => $c->id === $classroom->id);
 
@@ -85,6 +103,7 @@ class ClassController extends Controller
             'seoKey' => 'classes',
             'classroom' => $classroom,
             'items' => $items,
+            'gallery' => $gallery,
             'prev' => $index > 0 ? $all[$index - 1] : null,
             'next' => $index !== false && $index < $all->count() - 1 ? $all[$index + 1] : null,
             'allClasses' => $all,
