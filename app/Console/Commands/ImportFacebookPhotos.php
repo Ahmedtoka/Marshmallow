@@ -128,7 +128,8 @@ class ImportFacebookPhotos extends Command
 
             $label = $this->label($owner);
             $limit = (int) $this->option('limit');
-            $counts[$label] = ($counts[$label] ?? 0) + 1;
+            // Start from what the owner already has so the cap holds across runs, not per run.
+            $counts[$label] = ($counts[$label] ?? $owner->photos()->count()) + 1;
 
             if ($limit && $counts[$label] > $limit) {
                 continue;
