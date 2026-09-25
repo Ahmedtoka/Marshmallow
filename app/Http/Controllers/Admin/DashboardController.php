@@ -8,6 +8,7 @@ use App\Models\Lead;
 use App\Models\LeadActivity;
 use App\Models\User;
 use App\Models\Visit;
+use App\Support\Scheduler;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -84,6 +85,8 @@ class DashboardController extends Controller
         return view('admin.dashboard', [
             'user' => $user,
             'isManager' => $isManager,
+            // Only people who can act on it see the cron warning.
+            'schedulerDown' => $isManager && ! Scheduler::isRunning(),
             'myDay' => $myDay,
             'overdueCount' => $overdueCount,
             'kpis' => $kpis,
@@ -91,7 +94,7 @@ class DashboardController extends Controller
             'unassigned' => $unassigned,
             'recent' => $recent,
             'website' => $website,
-            'agents' => $isManager ? User::active()->whereIn('role', ['sales', 'sales_manager', 'admin'])->orderByRaw("FIELD(role, 'sales', 'sales_manager', 'admin')")->orderBy('name')->pluck('name', 'id') : collect(),
+            'agents' => $isManager ? User::active()->whereIn('role', ['sales', 'sales_manager', 'admin'])->orderByRaw("CASE role WHEN 'sales' THEN 1 WHEN 'sales_manager' THEN 2 ELSE 3 END")->orderBy('name')->pluck('name', 'id') : collect(),
         ]);
     }
 }

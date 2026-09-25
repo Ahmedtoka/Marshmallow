@@ -20,6 +20,19 @@
     </div>
 
     <div class="card-pad space-y-4">
+        {{-- Events are sent by the queue worker the cron starts, so the cron's health belongs here too. --}}
+        @php $lastRun = \App\Support\Scheduler::lastRun(); @endphp
+        <div id="scheduler" class="flex flex-wrap items-center gap-2 text-sm">
+            <span class="font-bold">Background tasks (cron):</span>
+            @if (\App\Support\Scheduler::isRunning())
+                <span class="badge badge-green">Running</span>
+                <span class="text-muted">last run {{ $lastRun->diffForHumans() }}</span>
+            @else
+                <span class="badge badge-red">Not running</span>
+                <span class="text-muted">{{ $lastRun ? 'last run '.$lastRun->diffForHumans() : 'no run recorded yet' }}. Events wait until it runs: check Cloudways → Cron Job Management → Advanced.</span>
+            @endif
+        </div>
+
         @if (! $capi['enabled'])
             <p class="text-sm text-muted">
                 @if (! $capi['has_pixel'])

@@ -20,6 +20,20 @@
         </div>
     </div>
 
+    @if ($schedulerDown)
+        @php $lastRun = \App\Support\Scheduler::lastRun(); @endphp
+        <div class="mb-5 flex flex-wrap items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <x-icon name="alert" class="mt-0.5 size-5 shrink-0" />
+            <div class="min-w-0 flex-1">
+                <p class="font-bold">Background tasks are not running{{ $lastRun ? ' (last run '.$lastRun->diffForHumans().')' : '' }}.</p>
+                <p class="mt-0.5">Follow-up reminders and Meta events are waiting. Check the cron job in Cloudways → Cron Job Management → Advanced.</p>
+            </div>
+            @if ($user->isAdmin())
+                <a href="{{ route('admin.content.settings.edit', 'tracking') }}#scheduler" class="btn btn-secondary btn-sm">Details</a>
+            @endif
+        </div>
+    @endif
+
     {{-- KPIs --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
         <a href="{{ route('admin.crm.leads.index', ['view' => 'all', 'from' => now()->startOfMonth()->toDateString()]) }}" class="card p-4 hover:border-grape/40">

@@ -130,7 +130,7 @@ trait FiltersLeads
     protected function assignableUsers()
     {
         return User::active()->whereIn('role', ['sales', 'sales_manager', 'admin'])
-            ->orderByRaw("FIELD(role, 'sales', 'sales_manager', 'admin')")->orderBy('name')->get();
+            ->orderByRaw("CASE role WHEN 'sales' THEN 1 WHEN 'sales_manager' THEN 2 ELSE 3 END")->orderBy('name')->get();
     }
 
     protected function sourceLabel(Lead $lead): string

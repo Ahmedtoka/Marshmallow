@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use App\Support\Scheduler;
 use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
@@ -15,6 +16,9 @@ Artisan::command('inspire', function () {
 */
 Schedule::command('crm:follow-up-reminders')->everyFifteenMinutes()->withoutOverlapping();
 Schedule::command('crm:follow-up-digest')->dailyAt('08:00')->timezone('Africa/Cairo');
+
+// Proof of life for the cron itself: the dashboard warns when this stamp is more than a few minutes old.
+Schedule::call(fn () => Scheduler::beat())->everyMinute()->name('scheduler:heartbeat');
 
 // Keep analytics tables lean; visits that became leads are kept.
 Schedule::command('analytics:prune')->weekly();
