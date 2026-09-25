@@ -79,6 +79,34 @@ The website tracks visits first-party (no third-party service needed): source (F
 - Optional GA4 and Meta Pixel IDs can be added in Dashboard → Settings → Tracking.
 - Tip: use UTM links in Facebook posts/ads, e.g. `https://yoursite.com/?utm_source=facebook&utm_medium=post&utm_campaign=admissions_2026`
 
+## Meta Conversions API
+
+Ad blockers, iPhones and browser tracking prevention hide many pixel events, so the key conversions are
+also sent from the server:
+
+| Event | When |
+|---|---|
+| `Lead` | every booking made through the website form |
+| `Schedule` | the booking is a visit (`interest = tour`) |
+| `SubmitApplication` | a careers application |
+
+- **Deduplication:** each lead (and job application) gets a `meta_event_id` when it is created. The
+  thank-you / careers page pixel and the server event both use it, so Meta counts the action once.
+- **Customer data:** phone (Egyptian `01…` sent as `201…`), email, first and last name, city (Giza) and
+  country (EG) are normalized and SHA-256 hashed before they are queued, plus IP, user agent and the
+  `_fbp` / `_fbc` cookies. When the pixel could not write `_fbc`, it is built from the ad click id the
+  tracker keeps in `mm_fbclid`. Raw values are never logged.
+- **Credentials** live only in `.env`: `META_CAPI_TOKEN` (Events Manager → Settings → Conversions API →
+  Generate access token) and, only while checking in Events Manager → Test Events, `META_TEST_EVENT_CODE`.
+  The pixel id is the "Meta Pixel ID" in Dashboard → Settings → Tracking. No token = nothing is sent.
+- **Delivery** is queued (`jobs` table) and sent by the queue worker the scheduler starts every minute.
+  Network errors, rate limits and Meta outages retry after 1, 5, 15 and 60 minutes; a rejected event
+  (bad token, bad data) fails straight away and lands in `failed_jobs` (`php artisan queue:retry all`
+  resends them once fixed).
+- **Health:** Dashboard → Settings → Tracking shows the last results and Meta's last error, and each lead
+  shows whether its events reached Meta. Everything is also in `storage/logs/laravel.log` ("Meta CAPI").
+- Code: `app/Services/MetaConversions.php`, `app/Jobs/SendMetaConversion.php`.
+
 ## Deploying to Cloudways
 
 1. **Create the app:** a PHP (Laravel) application on PHP 8.2+ with MySQL.
@@ -98,7 +126,7 @@ The website tracks visits first-party (no third-party service needed): source (F
    php artisan storage:link
    php artisan config:cache && php artisan route:cache && php artisan view:cache
    ```
-6. **Cron job** (Cloudways → Cron Job Management), for follow-up reminders:
+6. **Cron job** (Cloudways → Cron Job Management), for follow-up reminders and the queue worker:
    ```
    * * * * * cd /home/master/applications/APP_ID/public_html && php artisan schedule:run >> /dev/null 2>&1
    ```
@@ -126,6 +154,7 @@ Do **not** run `db:seed` again after launch except for a specific seeder you mea
 | `crm:follow-up-reminders` | every 15 min | Notifies an agent when a follow-up is due within the hour |
 | `crm:follow-up-digest` | 08:00 daily | Morning notice to agents who have overdue follow-ups |
 | `analytics:prune` | weekly | Deletes tracking data older than 400 days (keeps visits that became leads) |
+| `queue:work --stop-when-empty` | every minute | Sends queued jobs (Meta Conversions API events), then exits |
 
 ## Demo data (local preview only)
 
