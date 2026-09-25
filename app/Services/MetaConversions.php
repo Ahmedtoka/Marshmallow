@@ -9,6 +9,7 @@ use App\Models\Classroom;
 use App\Models\JobApplication;
 use App\Models\Lead;
 use App\Models\MetaConversion;
+use App\Support\MetaParams;
 use Carbon\CarbonInterface;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
@@ -139,6 +140,7 @@ class MetaConversions
         $phones = array_values(array_unique(array_filter(array_map([self::class, 'normalizePhone'], $phones))));
         [$first, $last] = self::splitName($name);
         $email = mb_strtolower(trim((string) $email));
+        $params = MetaParams::for($request);
 
         return array_filter([
             'ph' => $phones ? array_map([self::class, 'hash'], $phones) : null,
@@ -147,10 +149,13 @@ class MetaConversions
             'ln' => $last ? self::hash($last) : null,
             'ct' => self::hash(self::CITY),
             'country' => self::hash(self::COUNTRY),
-            'client_ip_address' => $request->ip(),
+            // The same hashed visitor id the pixel sends (see the site layout).
+            'external_id' => [MetaParams::externalId($request)],
+            // Meta's Parameter Builder picks a public IP (IPv6 first) and skips private ones like 127.0.0.1.
+            'client_ip_address' => $params->getClientIpAddress(),
             'client_user_agent' => $request->userAgent(),
-            'fbp' => $this->fbp($request),
-            'fbc' => $this->fbc($request),
+            'fbp' => $params->getFbp(),
+            'fbc' => $params->getFbc() ?? $this->fbcFromTracker($request),
         ]);
     }
 
@@ -185,31 +190,17 @@ class MetaConversions
         return hash('sha256', $value);
     }
 
-    private function fbp(Request $request): ?string
-    {
-        $fbp = (string) $request->cookie('_fbp');
-
-        return preg_match('/^fb\.\d\.\d{10,13}\.\d+$/', $fbp) ? $fbp : null;
-    }
-
     /**
-     * The pixel stores the ad click in _fbc. When it could not (blocked, or it never loaded), build the
-     * same value from the fbclid the tracker kept when the parent landed from an ad.
+     * Fallback when neither the _fbc cookie nor the current URL has the ad click (cookie cleared or
+     * blocked): rebuild it from the fbclid the tracker kept when the parent landed from an ad.
      */
-    private function fbc(Request $request): ?string
+    private function fbcFromTracker(Request $request): ?string
     {
-        $fbc = (string) $request->cookie('_fbc');
-        if (preg_match('/^fb\.\d\.\d{10,13}\.[\w-]+$/', $fbc)) {
-            return $fbc;
+        if (! preg_match('/^(\d{13})\.([\w-]{10,500})$/', (string) $request->cookie('mm_fbclid'), $m)) {
+            return null;
         }
 
-        $fbclid = (string) $request->query('fbclid');
-        $time = (int) floor(microtime(true) * 1000);
-        if ($fbclid === '' && preg_match('/^(\d{13})\.([\w-]+)$/', (string) $request->cookie('mm_fbclid'), $m)) {
-            [, $time, $fbclid] = $m;
-        }
-
-        return preg_match('/^[\w-]{10,500}$/', $fbclid) ? 'fb.1.'.$time.'.'.$fbclid : null;
+        return 'fb.1.'.$m[1].'.'.$m[2];
     }
 
     /** The page the form was on, without its query string (the enroll link can carry a child's birthday). */

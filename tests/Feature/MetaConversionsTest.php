@@ -81,8 +81,12 @@ class MetaConversionsTest extends TestCase
         $this->assertSame(hash('sha256', 'giza'), $user['ct']);
         $this->assertSame(hash('sha256', 'eg'), $user['country']);
         $this->assertSame('TestBrowser/1.0', $user['client_user_agent']);
-        $this->assertSame('fb.1.1758700000000.1234567890', $user['fbp']);
+        // Meta's Parameter Builder keeps the browser id and adds its appendix.
+        $this->assertStringStartsWith('fb.1.1758700000000.1234567890.', $user['fbp']);
+        // No _fbc cookie and no fbclid in the URL: rebuilt from the click the tracker kept.
         $this->assertSame('fb.1.1758700000000.IwAR0abcdefghijk', $user['fbc']);
+        // 127.0.0.1 is not a public address, so no IP is sent rather than a useless one.
+        $this->assertArrayNotHasKey('client_ip_address', $user);
 
         Http::assertSent(function (HttpRequest $request) {
             $body = $request->body();
@@ -97,6 +101,46 @@ class MetaConversionsTest extends TestCase
 
         // Only an enrollment: no Schedule.
         $this->assertSame(['Lead'], MetaConversion::pluck('event_name')->all());
+    }
+
+    public function test_the_pixel_and_the_server_send_the_same_external_id(): void
+    {
+        Http::fake(['graph.facebook.com/*' => Http::response(['events_received' => 1])]);
+        $visitor = (string) Str::uuid();
+        $externalId = hash('sha256', $visitor);
+
+        $this->withUnencryptedCookie('mm_vid', $visitor)->post('/enroll', $this->booking());
+
+        $this->assertSame([$externalId], $this->sentEvents()[0]['user_data']['external_id']);
+        $this->withUnencryptedCookie('mm_vid', $visitor)
+            ->get(route('enroll.thanks'))
+            ->assertSee("external_id: '{$externalId}'", false);
+    }
+
+    public function test_public_pages_set_meta_cookies_from_the_server(): void
+    {
+        $response = $this->get('/?fbclid=IwAR0abcdefghijk');
+
+        $fbp = $response->getCookie('_fbp', false);
+        $fbc = $response->getCookie('_fbc', false);
+        $this->assertNotNull($fbp);
+        $this->assertMatchesRegularExpression('/^fb\.\d\.\d{13}\.\d+\.[\w-]+$/', $fbp->getValue());
+        $this->assertStringContainsString('.IwAR0abcdefghijk.', $fbc->getValue());
+        $this->assertFalse($fbp->isHttpOnly(), 'The pixel must be able to read it.');
+        $this->assertGreaterThan(now()->addDays(80)->getTimestamp(), $fbp->getExpiresTime());
+
+        // The visitor id the page used for external_id is the one it hands the tracker.
+        $visitor = $response->getCookie('mm_vid', false)->getValue();
+        $this->assertTrue(Str::isUuid($visitor));
+        $response->assertSee("external_id: '".hash('sha256', $visitor)."'", false);
+    }
+
+    public function test_no_meta_cookies_without_a_pixel_or_in_the_dashboard(): void
+    {
+        $this->get(route('admin.login'))->assertCookieMissing('_fbp');
+
+        Setting::put(['meta_pixel_id' => '']);
+        $this->get('/')->assertCookieMissing('_fbp')->assertCookieMissing('mm_vid');
     }
 
     public function test_nothing_is_sent_without_a_token(): void

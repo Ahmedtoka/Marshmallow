@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "53b5d56b3b7e3cbac1713e68c8850f6c",
+    "content-hash": "34db7ff876947d4ac2d08ebe0ce766cd",
     "packages": [
         {
             "name": "brick/math",
@@ -512,6 +512,45 @@
                 }
             ],
             "time": "2025-03-06T22:45:56+00:00"
+        },
+        {
+            "name": "facebook/capi-param-builder-php",
+            "version": "1.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/facebook/capi-param-builder.git",
+                "reference": "e9510b8ee9fdb5270e39eaec4676354f6eb7e6e1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/facebook/capi-param-builder/zipball/e9510b8ee9fdb5270e39eaec4676354f6eb7e6e1",
+                "reference": "e9510b8ee9fdb5270e39eaec4676354f6eb7e6e1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FacebookAds\\": "php/capi-param-builder/src/"
+                },
+                "classmap": [
+                    "php/capi-param-builder/src/model/",
+                    "php/capi-param-builder/src/util/",
+                    "php/capi-param-builder/src/piiUtil/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Parameter builder SDK for Conversion API events",
+            "support": {
+                "issues": "https://github.com/facebook/capi-param-builder/issues",
+                "source": "https://github.com/facebook/capi-param-builder/tree/v1.3.2"
+            },
+            "time": "2026-09-15T18:27:20+00:00"
         },
         {
             "name": "fruitcake/php-cors",

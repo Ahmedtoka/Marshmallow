@@ -123,7 +123,8 @@
             n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
             t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', @js($pixel));
+            {{-- Same hashed visitor id the Conversions API sends, so Meta ties browser and server events to one person. --}}
+            fbq('init', @js($pixel), { external_id: @js(\App\Support\MetaParams::externalId(request())) });
             fbq('track', 'PageView');
         </script>
         <noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id={{ urlencode($pixel) }}&ev=PageView&noscript=1"></noscript>

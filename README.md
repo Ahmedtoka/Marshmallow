@@ -93,9 +93,14 @@ also sent from the server:
 - **Deduplication:** each lead (and job application) gets a `meta_event_id` when it is created. The
   thank-you / careers page pixel and the server event both use it, so Meta counts the action once.
 - **Customer data:** phone (Egyptian `01…` sent as `201…`), email, first and last name, city (Giza) and
-  country (EG) are normalized and SHA-256 hashed before they are queued, plus IP, user agent and the
-  `_fbp` / `_fbc` cookies. When the pixel could not write `_fbc`, it is built from the ad click id the
-  tracker keeps in `mm_fbclid`. Raw values are never logged.
+  country (EG) are normalized and SHA-256 hashed before they are queued, plus user agent. Raw values are
+  never logged.
+- **Meta's Parameter Builder** (`facebook/capi-param-builder-php`, `app/Support/MetaParams.php`) writes the
+  `_fbp` / `_fbc` cookies from the server on every public page (`SetMetaCookies` middleware), so they
+  outlive Safari's 7-day limit on JavaScript cookies, and supplies fbp, fbc and a public client IP
+  (IPv6 first) for the server events. If `_fbc` is gone, it is rebuilt from `mm_fbclid`.
+- **External ID:** the SHA-256 of the visitor id (`mm_vid`, now also set by the server) goes with the
+  pixel's `init` and with every server event, so Meta ties both to the same person.
 - **Credentials** live only in `.env`: `META_CAPI_TOKEN` (Events Manager → Settings → Conversions API →
   Generate access token) and, only while checking in Events Manager → Test Events, `META_TEST_EVENT_CODE`.
   The pixel id is the "Meta Pixel ID" in Dashboard → Settings → Tracking. No token = nothing is sent.

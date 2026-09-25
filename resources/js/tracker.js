@@ -34,9 +34,13 @@ const setCookie = (name, value, seconds) => {
 })();
 
 function ids() {
+    // The server sets and refreshes mm_vid when the Meta pixel is on. Rewriting it from JavaScript would
+    // cut it to 7 days in Safari, so only create it here when it is missing.
     let vid = getCookie('mm_vid');
-    if (!vid) vid = uuid();
-    setCookie('mm_vid', vid, 60 * 60 * 24 * 730);
+    if (!vid) {
+        vid = uuid();
+        setCookie('mm_vid', vid, 60 * 60 * 24 * 730);
+    }
 
     let sid = getCookie('mm_sid');
     if (!sid) sid = uuid();

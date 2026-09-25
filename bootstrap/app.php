@@ -23,6 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // them as null and website leads lose their visitor journey and their Meta ad-click match.
         $middleware->encryptCookies(except: ['mm_vid', 'mm_sid', 'mm_fbclid', '_fbp', '_fbc']);
 
+        // Meta's _fbp / _fbc and the visitor id, written from the server on public pages.
+        $middleware->web(append: [\App\Http\Middleware\SetMetaCookies::class]);
+
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
         $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
 
