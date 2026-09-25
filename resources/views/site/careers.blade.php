@@ -1,8 +1,8 @@
 @extends('layouts.site')
 
-@if (session('success'))
+@if (session('meta_event_id'))
     @push('pixel')
-        <script>mmPixel('SubmitApplication', { content_name: 'Careers form' });</script>
+        <script>mmPixel('SubmitApplication', @js(\App\Services\MetaConversions::applicationParams()), true, @js(session('meta_event_id')));</script>
     @endpush
 @endif
 

@@ -2,6 +2,7 @@
  * Marshmallow first-party visitor tracker.
  *
  * Cookies:  mm_vid – visitor id (2 years)   mm_sid – visit id (renewed on activity, expires after 30 idle minutes)
+ *           mm_fbclid – last Facebook ad click, for the Meta Conversions API (90 days)
  * Sends:    pageview on load, engagement pings (visible time + scroll depth), and events.
  *
  * Automatic events: call_click, whatsapp_click, map_click, email_click, outbound_click,
@@ -24,6 +25,13 @@ const getCookie = (name) => document.cookie.split('; ').find((c) => c.startsWith
 const setCookie = (name, value, seconds) => {
     document.cookie = `${name}=${value}; max-age=${seconds}; path=/; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
 };
+
+// Keep the Facebook ad click id so the server can still match a booking to the ad when the pixel is blocked
+// and never wrote its own _fbc cookie. Stored as "<ms>.<fbclid>"; the latest ad click wins.
+(() => {
+    const fbclid = new URLSearchParams(location.search).get('fbclid');
+    if (fbclid && /^[\w-]{10,500}$/.test(fbclid)) setCookie('mm_fbclid', `${Date.now()}.${fbclid}`, 60 * 60 * 24 * 90);
+})();
 
 function ids() {
     let vid = getCookie('mm_vid');

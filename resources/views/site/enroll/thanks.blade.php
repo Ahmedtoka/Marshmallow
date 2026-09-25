@@ -67,17 +67,15 @@
         window.addEventListener('load', function () {
             var key = 'mm_enroll_tracked_{{ $lead['id'] ?? 'x' }}';
             try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, '1'); } catch (e) {}
-            var details = @js([
-                'content_name' => $classroom?->name ?? 'No class yet',
-                'content_category' => \App\Models\Lead::INTERESTS[$lead['interest'] ?? 'enrollment'] ?? 'Enrollment',
-                'branch' => $branch?->name,
-            ]);
+            var details = @js(\App\Services\MetaConversions::leadParams($classroom, $branch, $lead['interest'] ?? null));
+            // Same id the server sent to the Conversions API for this booking.
+            var eventId = @js($lead['meta_event_id'] ?? null);
 
             if (window.mmTrack) window.mmTrack('form_submit', 'enroll');
             if (window.mmPixel) {
-                window.mmPixel('Lead', details);
+                window.mmPixel('Lead', details, true, eventId);
                 @if (($lead['interest'] ?? '') === 'tour')
-                    window.mmPixel('Schedule', details);
+                    window.mmPixel('Schedule', details, true, eventId);
                 @endif
             }
         });

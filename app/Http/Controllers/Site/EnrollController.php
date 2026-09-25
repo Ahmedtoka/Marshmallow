@@ -69,6 +69,7 @@ class EnrollController extends Controller
             'branch_id' => $lead->branch_id,
             'child_name' => $lead->child_name,
             'interest' => $lead->interest,
+            'meta_event_id' => $lead->meta_event_id,
         ]);
     }
 

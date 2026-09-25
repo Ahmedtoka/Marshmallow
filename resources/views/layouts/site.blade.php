@@ -127,12 +127,14 @@
     @endif
 
     {{-- One helper for page-level conversions: mmPixel('Lead', {...}) sends to the Meta pixel and
-         to GA4 when either is configured, and does nothing when neither is. --}}
+         to GA4 when either is configured, and does nothing when neither is. Pass the eventId the server
+         also sends to the Conversions API so Meta counts the action once. --}}
     <script>
-        window.mmPixel = function (event, params, standard) {
+        window.mmPixel = function (event, params, standard, eventId) {
             params = params || {};
             if (window.fbq) {
-                window.fbq(standard === false ? 'trackCustom' : 'track', event, params);
+                var options = eventId ? { eventID: eventId } : undefined;
+                window.fbq(standard === false ? 'trackCustom' : 'track', event, params, options);
             }
             if (window.gtag) {
                 window.gtag('event', event, params);
