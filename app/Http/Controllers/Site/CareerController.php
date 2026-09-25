@@ -7,6 +7,7 @@ use App\Http\Requests\Site\CareerApplicationRequest;
 use App\Models\Branch;
 use App\Models\JobApplication;
 use App\Models\JobOpening;
+use App\Services\MetaConversions;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class CareerController extends Controller
         ]);
     }
 
-    public function apply(CareerApplicationRequest $request): RedirectResponse
+    public function apply(CareerApplicationRequest $request, MetaConversions $meta): RedirectResponse
     {
         $success = 'Thank you for applying! We read every application and will contact you if your profile fits an opening.';
 
@@ -35,7 +36,7 @@ class CareerController extends Controller
         $data = $request->validated();
         $opening = is_numeric($data['position']) ? JobOpening::active()->find($data['position']) : null;
 
-        JobApplication::create([
+        $application = JobApplication::create([
             'job_opening_id' => $opening?->id,
             'branch_id' => $data['branch_id'] ?? $opening?->branch_id,
             'name' => $data['name'],
@@ -46,9 +47,13 @@ class CareerController extends Controller
             'cv_path' => $request->hasFile('cv') ? $request->file('cv')->store('cvs', 'local') : null,
             'status' => 'new',
             'visitor_uuid' => self::visitorUuid($request),
+            'meta_event_id' => (string) Str::uuid(),
         ]);
 
-        return redirect()->to(route('careers').'#apply')->with('status', $success);
+        $meta->trackApplication($application, $request);
+
+        // The event id lets the careers page pixel and the server event deduplicate.
+        return redirect()->to(route('careers').'#apply')->with('status', $success)->with('meta_event_id', $application->meta_event_id);
     }
 
     /**

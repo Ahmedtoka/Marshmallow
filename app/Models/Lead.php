@@ -71,6 +71,12 @@ class Lead extends Model
         });
     }
 
+    /** Server-side events sent to Meta for this booking (Lead, and Schedule for a visit). */
+    public function metaConversions(): HasMany
+    {
+        return $this->hasMany(MetaConversion::class);
+    }
+
     public function classroom(): BelongsTo
     {
         return $this->belongsTo(Classroom::class);

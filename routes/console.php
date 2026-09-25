@@ -18,3 +18,10 @@ Schedule::command('crm:follow-up-digest')->dailyAt('08:00')->timezone('Africa/Ca
 
 // Keep analytics tables lean; visits that became leads are kept.
 Schedule::command('analytics:prune')->weekly();
+
+// Queue worker without a separate supervisor: each minute the cron starts a worker that sends whatever is
+// waiting (Meta Conversions API events) and exits. In the background so it never delays the jobs above.
+Schedule::command('queue:work --stop-when-empty --tries=5 --max-time=50')
+    ->everyMinute()
+    ->withoutOverlapping(5)
+    ->runInBackground();

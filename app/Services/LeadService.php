@@ -50,6 +50,8 @@ class LeadService
             'form_path' => Str::limit((string) parse_url((string) $request->headers->get('referer'), PHP_URL_PATH), 250, '') ?: null,
             'ip_address' => $request->ip(),
             'user_agent' => Str::limit((string) $request->userAgent(), 1000, ''),
+            // Shared by the thank-you page pixel and the Conversions API so Meta counts the booking once.
+            'meta_event_id' => (string) Str::uuid(),
         ];
 
         $lead = $this->create($data + $attribution);
@@ -58,6 +60,8 @@ class LeadService
             $visitor->update(['lead_id' => $lead->id]);
             $visit?->update(['converted' => true, 'is_bounce' => false]);
         }
+
+        app(MetaConversions::class)->trackLead($lead, $request);
 
         return $lead;
     }

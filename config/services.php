@@ -18,6 +18,16 @@ return [
         'key' => env('POSTMARK_API_KEY'),
     ],
 
+    /*
+    | Meta Conversions API: server-side copies of the pixel's conversions. The pixel id itself is the
+    | "meta_pixel_id" setting in the dashboard; the token lives only here so it never reaches the database.
+    */
+    'meta' => [
+        'capi_token' => env('META_CAPI_TOKEN'),
+        'test_event_code' => env('META_TEST_EVENT_CODE'),
+        'graph_version' => env('META_GRAPH_VERSION', 'v24.0'),
+    ],
+
     'resend' => [
         'key' => env('RESEND_API_KEY'),
     ],
