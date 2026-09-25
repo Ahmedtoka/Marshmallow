@@ -78,7 +78,10 @@
     <meta name="description" content="{{ \Illuminate\Support\Str::limit(strip_tags($pageDescription), 300) }}">
     <link rel="canonical" href="{{ $canonical }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="mm-track" content="{{ route('track.collect') }}">
+    {{-- Dashboard users are not tracked. The collect endpoint has no session to check, so decide here. --}}
+    @guest
+        <meta name="mm-track" content="{{ route('track.collect') }}">
+    @endguest
     <meta name="theme-color" content="#E8177F">
     @stack('meta')
 

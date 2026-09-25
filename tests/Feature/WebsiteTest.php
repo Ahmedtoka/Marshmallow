@@ -4,7 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Branch;
 use App\Models\Lead;
+use App\Models\PageView;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class WebsiteTest extends TestCase
@@ -46,6 +49,35 @@ class WebsiteTest extends TestCase
         $this->assertSame('01005557788', $lead->phone);
         $this->assertSame('popcorn', $lead->classroom?->slug);
         $this->assertSame('sales.zayed@marshmallownursery.com', $lead->assignee?->email);
+    }
+
+    public function test_the_tracker_beacon_does_not_eat_the_thank_you_page(): void
+    {
+        // Submitting the form hides the page, so the tracker's pagehide beacon lands between the booking
+        // and the thank-you page. It must not touch the session, or the parent is sent back to /enroll.
+        $this->post('/enroll', [
+            'parent_name' => 'Test Parent',
+            'phone' => '01005557788',
+            'whatsapp_same' => '1',
+            'branch_id' => Branch::where('slug', 'sheikh-zayed')->value('id'),
+            'interest' => 'enrollment',
+        ])->assertRedirect(route('enroll.thanks'));
+
+        // The beacon is still recorded, just without a session.
+        $this->postJson('/t/collect', ['type' => 'pageview', 'path' => '/enroll', 'vid' => (string) Str::uuid(), 'sid' => (string) Str::uuid()])
+            ->assertOk()
+            ->assertJson(['ok' => true]);
+        $this->assertSame(1, PageView::count());
+
+        $this->get(route('enroll.thanks'))->assertOk()->assertSee("mmPixel('Lead'", false);
+    }
+
+    public function test_dashboard_users_do_not_get_the_tracker(): void
+    {
+        $this->get('/')->assertSee('name="mm-track"', false);
+
+        $this->actingAs(User::where('role', 'admin')->firstOrFail())
+            ->get('/')->assertDontSee('name="mm-track"', false);
     }
 
     public function test_dashboard_requires_login(): void

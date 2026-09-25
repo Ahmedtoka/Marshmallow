@@ -10,7 +10,15 @@ use Illuminate\Support\Facades\Route;
 | Visitor tracking
 |--------------------------------------------------------------------------
 */
-Route::post('/t/collect', [TrackingController::class, 'collect'])->name('track.collect')->middleware('throttle:240,1');
+// Stateless on purpose: the tracker's pagehide beacon fires while a form is being submitted. If it shared the
+// session it would consume or overwrite the flash data, and a parent who just booked would land back on /enroll.
+Route::post('/t/collect', [TrackingController::class, 'collect'])->name('track.collect')
+    ->middleware('throttle:240,1')
+    ->withoutMiddleware([
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class, // already exempt, but it would still read the session
+    ]);
 
 /*
 |--------------------------------------------------------------------------

@@ -24,7 +24,8 @@ class TrackingController extends Controller
         $data = $request->json()->all() ?: $request->all();
         $ua = $request->userAgent();
 
-        if (auth()->check() || TrafficSource::isBot($ua) || ! Str::isUuid($data['vid'] ?? '') || ! Str::isUuid($data['sid'] ?? '')) {
+        // No session on this route (see routes/web.php): dashboard users never get the tracker in the first place.
+        if (TrafficSource::isBot($ua) || ! Str::isUuid($data['vid'] ?? '') || ! Str::isUuid($data['sid'] ?? '')) {
             return response()->json(['ok' => false]);
         }
 
