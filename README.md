@@ -130,6 +130,9 @@ also sent from the server:
    ```
    * * * * * cd /home/master/applications/APP_ID/public_html && php artisan schedule:run >> /dev/null 2>&1
    ```
+   Paste it in the **Advanced** tab: the Basic form only accepts a PHP file name. `crontab -l` over SSH
+   shows nothing even when it works. To check it runs, send the output to `storage/logs/scheduler.log`
+   for a few minutes instead of `/dev/null`.
 7. **After each later deploy** (pull from Git, then over SSH in the app folder):
    ```bash
    bash deploy.sh
