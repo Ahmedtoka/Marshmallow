@@ -353,6 +353,16 @@
                     @if ($lead->form_path)<dt class="text-muted">Form page</dt><dd class="break-all">{{ $lead->form_path }}</dd>@endif
                     @if ($lead->referrer)<dt class="text-muted">Referrer</dt><dd class="break-all">{{ \Illuminate\Support\Str::limit($lead->referrer, 80) }}</dd>@endif
                     <dt class="text-muted">Created</dt><dd>{{ $lead->created_at->format('D j M Y, g:i A') }}</dd>
+                    @if ($lead->metaConversions->isNotEmpty())
+                        <dt class="text-muted">Meta</dt>
+                        <dd class="flex flex-wrap gap-1.5">
+                            @foreach ($lead->metaConversions as $conversion)
+                                <span class="badge {{ \App\Models\MetaConversion::STATUS_BADGES[$conversion->status] ?? 'badge-muted' }}" title="{{ $conversion->error }}">
+                                    {{ $conversion->event_name }}: {{ \App\Models\MetaConversion::STATUSES[$conversion->status] ?? $conversion->status }}
+                                </span>
+                            @endforeach
+                        </dd>
+                    @endif
                 </dl>
             </section>
 

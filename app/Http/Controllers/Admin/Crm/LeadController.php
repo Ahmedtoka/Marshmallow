@@ -125,6 +125,7 @@ class LeadController extends Controller
             'activities.user:id,name',
             'followUps.user:id,name',
             'visitor',
+            'metaConversions',
         ]);
 
         return view('admin.crm.leads.show', [

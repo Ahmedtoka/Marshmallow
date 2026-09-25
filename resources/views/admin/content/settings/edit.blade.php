@@ -22,7 +22,8 @@
             @endforeach
         </nav>
 
-        <form method="POST" action="{{ route('admin.content.settings.update', $group) }}" enctype="multipart/form-data" class="min-w-0">
+        <div class="min-w-0 space-y-6">
+        <form method="POST" action="{{ route('admin.content.settings.update', $group) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -80,5 +81,10 @@
 
             @include('admin.content.partials.save-bar', ['label' => 'Save '.mb_strtolower($schema['label']), 'note' => 'Changes appear on the website straight away.'])
         </form>
+
+        @if ($capi)
+            @include('admin.content.settings.meta-capi', ['capi' => $capi])
+        @endif
+        </div>
     </div>
 @endsection

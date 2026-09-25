@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Content;
 use App\Http\Controllers\Admin\Content\Concerns\HandlesUploads;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Services\MetaConversions;
 use App\Support\Media;
 use App\Support\SettingsSchema;
 use Illuminate\Http\Request;
@@ -23,6 +24,8 @@ class SettingController extends Controller
             'group' => $group,
             'schema' => SettingsSchema::group($group),
             'values' => Setting::query()->pluck('value', 'key')->all(),
+            // Health of the server-side Meta events, shown next to the pixel id.
+            'capi' => $group === 'tracking' ? MetaConversions::summary() : null,
         ]);
     }
 
